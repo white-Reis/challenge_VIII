@@ -24,7 +24,7 @@ In this technical challenge, my goal is to develop a RESTful API using the Sprin
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/compass-scholarship-api.git
+   git clone https://github.com/white-Reis/compass-scholarship-api.git
    cd compass-scholarship-api
 ______________________________________________________________________________________________________________________________________________________________________________________________________________________________
 ## 🚀Technologies
