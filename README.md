@@ -38,7 +38,7 @@ ________________________________________________________________________________
 ## 🚀Technologies
 
 - Java 17
-- Maven 3.0.9
+- Maven 4.0.0
 - MySQL database
 - Git
-- SPRING BOOT 3
+- SPRING BOOT 3.0.9
