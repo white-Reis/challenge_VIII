@@ -14,11 +14,17 @@ public class Student {
     private Long id;
 
     private String name;
+
     private String lastName;
+
     private String email;
 
+    private String course;
+
+    private int level;
+
     @ManyToOne
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "class_id")
     @JsonBackReference
     private Team team;
 

@@ -14,14 +14,17 @@ public class Internal {
     private Long id;
 
     private String name;
+
     private String lastName;
 
     private String email;
 
-    private String role; // Exemplo: "Instructor", "Coordinator", "Scrum Master"
+    private String position;
+
+    private String role;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "class_id")
     @JsonBackReference
     private Team team;
 }
