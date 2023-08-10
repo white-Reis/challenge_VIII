@@ -29,10 +29,10 @@ public class Team {
 
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
-    private List<Internal> Coordinator;
+    private List<Internal> Coordinators;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
-    private List<Internal> scrumMaster;
+    private List<Internal> scrumMasters;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.PERSIST)
     private List<Internal> Instructors;
