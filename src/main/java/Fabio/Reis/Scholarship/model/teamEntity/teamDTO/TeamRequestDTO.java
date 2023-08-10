@@ -1,7 +1,6 @@
 package Fabio.Reis.Scholarship.model.teamEntity.teamDTO;
 
 
-
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalRequestDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentRequestDTO;
 import lombok.Data;

@@ -3,12 +3,15 @@ package Fabio.Reis.Scholarship.model.teamEntity;
 import Fabio.Reis.Scholarship.model.internalEntity.Internal;
 import Fabio.Reis.Scholarship.model.studentEntity.Student;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "class")
 

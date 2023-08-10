@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,23 +52,133 @@ public class TeamService implements TeamService_i {
 
     @Override
     public ResponseEntity<List<TeamDTO>> getClasses() {
-        return null;
+        List<Team> teams = teamRepo.findAll();
+        List<TeamDTO> teamDTOs = teams.stream()
+                .map(this::mapInternalsDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(teamDTOs);
     }
 
     @Override
-    public ResponseEntity<Void> createClass(TeamRequestDTO teamRequest) {
-        return null;
+    public ResponseEntity<List<InternalDTO>> getClassInstructors(Long id) {
+        Optional<Team> teamOptional = teamRepo.findById(id);
+
+        if (teamOptional.isPresent()) {
+            TeamDTO teamDTO = mapInternalsDTO(teamOptional.get());
+            List<InternalDTO> instructorsDTO = new ArrayList<>(teamDTO.getInstructors());
+            return ResponseEntity.status(HttpStatus.OK).body(instructorsDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @Override
+    public ResponseEntity<List<InternalDTO>> getScrumMasters(Long id) {
+        Optional<Team> teamOptional = teamRepo.findById(id);
+
+        if (teamOptional.isPresent()) {
+            TeamDTO teamDTO = mapInternalsDTO(teamOptional.get());
+            List<InternalDTO> scrumMastersDTO = new ArrayList<>(teamDTO.getScrumMasters());
+            return ResponseEntity.status(HttpStatus.OK).body(scrumMastersDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Override
-    public ResponseEntity<Void> updateClass(TeamRequestDTO teamRequest) {
-        return null;
+    public ResponseEntity<List<InternalDTO>> getCoordinators(Long id) {
+        Optional<Team> teamOptional = teamRepo.findById(id);
+
+        if (teamOptional.isPresent()) {
+            TeamDTO teamDTO = mapInternalsDTO(teamOptional.get());
+            List<InternalDTO> coordinatorsDTO = new ArrayList<>(teamDTO.getCoordinators());
+            return ResponseEntity.status(HttpStatus.OK).body(coordinatorsDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
+    @Override
+    public ResponseEntity<List<StudentDTO>> getStudents(Long id) {
+        Optional<Team> teamOptional = teamRepo.findById(id);
+
+        if (teamOptional.isPresent()) {
+            TeamDTO teamDTO = mapInternalsDTO(teamOptional.get());
+            List<StudentDTO> studentsDTO = new ArrayList<>(teamDTO.getStudents());
+            return ResponseEntity.status(HttpStatus.OK).body(studentsDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @Override
+    public ResponseEntity<Void> updateClass(Long id, TeamRequestDTO teamRequest) {
+        Optional<Team> teamOptional = teamRepo.findById(id);
+
+        if (teamOptional.isPresent()) {
+            Team team = mapInternalsToTeam(teamOptional.get());
+
+        if (teamRequest.getStudents() != null) {
+            addNewStudents(team, teamRequest.getStudents());
+        }
+
+        if (teamRequest.getInstructors() != null) {
+            addNewInternals(team, teamRequest.getInstructors(), "Instructor");
+        }
+        if (teamRequest.getCoordinators() != null) {
+            addNewInternals(team, teamRequest.getCoordinators(), "Coordinator");
+        }
+        if (teamRequest.getScrumMasters() != null) {
+            addNewInternals(team, teamRequest.getScrumMasters(), "Scrum Master");
+        }
+
+        teamRepo.save(team);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    } else
+
+    {
+        return ResponseEntity.notFound().build();
+    }
+
+}
 
     @Override
     public ResponseEntity<Void> startClass(Long id) {
-        return null;
+        Optional<Team> teamOptional = teamRepo.findById(id);
+
+        if (teamOptional.isPresent()) {
+            Team team = teamOptional.get();
+            team.setStatus(1);
+            team.setStartDate(LocalDate.now());
+
+            teamRepo.save(team);
+
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
+    @Override
+    public ResponseEntity<Void> finishClass(Long id) {
+        Optional<Team> teamOptional = teamRepo.findById(id);
+
+        if (teamOptional.isPresent()) {
+            Team team = teamOptional.get();
+            team.setStatus(2);
+            team.setEndDate(LocalDate.now());
+
+            teamRepo.save(team);
+
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @Override
     public ResponseEntity<Void> createClassWithStudentsAndInternals(TeamRequestDTO teamRequest) {
@@ -106,14 +217,14 @@ public class TeamService implements TeamService_i {
             members.add(member);
         }
 
-        switch (role) {
-            case "Coordinator":
+        switch (role.toLowerCase()) {
+            case "coordinator":
                 team.setCoordinators(members);
                 break;
-            case "Scrum Master":
+            case "scrum master":
                 team.setScrumMasters(members);
                 break;
-            case "Instructor":
+            case "instructor":
                 team.setInstructors(members);
                 break;
             default:
@@ -136,19 +247,19 @@ public class TeamService implements TeamService_i {
         List<InternalDTO> instructorDTOs = new ArrayList<>();
 
         for (Internal memberRequest : team.getCoordinators()) {
-            if (memberRequest.getRole().equals("Coordinator")) {
+            if (memberRequest.getRole().toLowerCase().equals("coordinator")) {
                 coordinatorDTOs.add(modelMapper.map(memberRequest, InternalDTO.class));
             }
         }
 
         for (Internal memberRequest : team.getScrumMasters()) {
-            if (memberRequest.getRole().equals("Scrum Master")) {
+            if (memberRequest.getRole().toLowerCase().equals("scrum master")) {
                 scrumMasterDTOs.add(modelMapper.map(memberRequest, InternalDTO.class));
             }
         }
 
         for (Internal memberRequest : team.getInstructors()) {
-            if (memberRequest.getRole().equals("Instructor")) {
+            if (memberRequest.getRole().toLowerCase().equals("instructor")) {
                 instructorDTOs.add(modelMapper.map(memberRequest, InternalDTO.class));
             }
         }
@@ -159,6 +270,71 @@ public class TeamService implements TeamService_i {
         teamDTO.setStudents(team.getStudents().stream().map(student -> modelMapper.map(student, StudentDTO.class)).collect(Collectors.toList()));
 
         return teamDTO;
+    }
+
+    private Team mapInternalsToTeam(Team team) {
+        List<Internal> coordinators = new ArrayList<>();
+        List<Internal> scrumMasters = new ArrayList<>();
+        List<Internal> instructors = new ArrayList<>();
+
+        for (Internal member : team.getCoordinators()) {
+            if (member.getRole().equalsIgnoreCase("Coordinator")) {
+                coordinators.add(member);
+            }
+        }
+
+        for (Internal member : team.getScrumMasters()) {
+            if (member.getRole().equalsIgnoreCase("Scrum Master")) {
+                scrumMasters.add(member);
+            }
+        }
+
+        for (Internal member : team.getInstructors()) {
+            if (member.getRole().equalsIgnoreCase("Instructor")) {
+                instructors.add(member);
+            }
+        }
+
+        team.setCoordinators(coordinators);
+        team.setScrumMasters(scrumMasters);
+        team.setInstructors(instructors);
+
+        return team;
+    }
+
+
+    private void addNewStudents(Team team, List<StudentRequestDTO> studentsRequest) {
+        for (StudentRequestDTO studentRequest : studentsRequest) {
+            Student student = modelMapper.map(studentRequest, Student.class);
+            student.setTeam(team);
+            team.getStudents().add(student);
+        }
+    }
+
+
+    private void addNewInternals(Team team, List<InternalRequestDTO> membersRequest, String role) {
+        List<Internal> membersToAdd = new ArrayList<>();
+        for (InternalRequestDTO memberRequest : membersRequest) {
+            Internal member = modelMapper.map(memberRequest, Internal.class);
+            member.setRole(role);
+            member.setTeam(team);
+            membersToAdd.add(member);
+        }
+
+        switch (role.toLowerCase()) {
+            case "coordinator":
+                team.getCoordinators().addAll(membersToAdd);
+                break;
+            case "scrum master":
+                team.getScrumMasters().addAll(membersToAdd);
+                break;
+            case "instructor":
+                team.getInstructors().addAll(membersToAdd);
+                break;
+            default:
+                // Handle unexpected role
+                break;
+        }
     }
 
 }

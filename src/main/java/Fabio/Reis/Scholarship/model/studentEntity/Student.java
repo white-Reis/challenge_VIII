@@ -3,9 +3,12 @@ package Fabio.Reis.Scholarship.model.studentEntity;
 import Fabio.Reis.Scholarship.model.teamEntity.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "students")
 public class Student {

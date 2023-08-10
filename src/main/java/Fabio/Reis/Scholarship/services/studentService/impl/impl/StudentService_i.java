@@ -6,5 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface StudentService_i {
     ResponseEntity create(StudentRequestDTO studentRequest);
+
     ResponseEntity<Void> delete(Long internalId) throws ChangeSetPersister.NotFoundException;
 }
