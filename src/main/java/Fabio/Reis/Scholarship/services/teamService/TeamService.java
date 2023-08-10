@@ -119,31 +119,30 @@ public class TeamService implements TeamService_i {
 
         if (teamOptional.isPresent()) {
             Team team = mapInternalsToTeam(teamOptional.get());
+            team.setName(teamRequest.getName());
+            team.setLearning(team.getLearning());
+            if (teamRequest.getStudents() != null) {
+                addNewStudents(team, teamRequest.getStudents());
+            }
 
-        if (teamRequest.getStudents() != null) {
-            addNewStudents(team, teamRequest.getStudents());
+            if (teamRequest.getInstructors() != null) {
+                addNewInternals(team, teamRequest.getInstructors(), "Instructor");
+            }
+            if (teamRequest.getCoordinators() != null) {
+                addNewInternals(team, teamRequest.getCoordinators(), "Coordinator");
+            }
+            if (teamRequest.getScrumMasters() != null) {
+                addNewInternals(team, teamRequest.getScrumMasters(), "Scrum Master");
+            }
+
+            teamRepo.save(team);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
 
-        if (teamRequest.getInstructors() != null) {
-            addNewInternals(team, teamRequest.getInstructors(), "Instructor");
-        }
-        if (teamRequest.getCoordinators() != null) {
-            addNewInternals(team, teamRequest.getCoordinators(), "Coordinator");
-        }
-        if (teamRequest.getScrumMasters() != null) {
-            addNewInternals(team, teamRequest.getScrumMasters(), "Scrum Master");
-        }
-
-        teamRepo.save(team);
-
-        return ResponseEntity.status(HttpStatus.OK).build();
-    } else
-
-    {
-        return ResponseEntity.notFound().build();
     }
-
-}
 
     @Override
     public ResponseEntity<Void> startClass(Long id) {
@@ -193,6 +192,9 @@ public class TeamService implements TeamService_i {
         ;
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
+
+
+
 
 
     private void mapAndSetStudents(Team team, List<StudentRequestDTO> studentsRequest) {
@@ -307,7 +309,7 @@ public class TeamService implements TeamService_i {
         for (StudentRequestDTO studentRequest : studentsRequest) {
             Student student = modelMapper.map(studentRequest, Student.class);
             student.setTeam(team);
-            team.getStudents().add(student);
+            studentRepo.save(student);
         }
     }
 
@@ -319,22 +321,7 @@ public class TeamService implements TeamService_i {
             member.setRole(role);
             member.setTeam(team);
             membersToAdd.add(member);
-        }
-
-        switch (role.toLowerCase()) {
-            case "coordinator":
-                team.getCoordinators().addAll(membersToAdd);
-                break;
-            case "scrum master":
-                team.getScrumMasters().addAll(membersToAdd);
-                break;
-            case "instructor":
-                team.getInstructors().addAll(membersToAdd);
-                break;
-            default:
-                // Handle unexpected role
-                break;
+            internalRepo.save(member);
         }
     }
-
 }
