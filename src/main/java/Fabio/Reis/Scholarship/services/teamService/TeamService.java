@@ -370,6 +370,8 @@ public class TeamService implements TeamService_i {
         teamDTO.setName(team.getName());
         teamDTO.setLearning(team.getLearning());
         teamDTO.setStatus(team.getStatus());
+        teamDTO.setStartDate(team.getStartDate());
+        teamDTO.setEndDate(team.getEndDate());
 
         Set<InternalDTO> coordinatorDTOs = team.getInternals().stream()
                 .filter(internal -> "Coordinator".equalsIgnoreCase(internal.getRole()))
