@@ -1,4 +1,4 @@
-package Fabio.Reis.Scholarship.services.studentService.impl.impl;
+package Fabio.Reis.Scholarship.services.studentService.impl;
 
 import Fabio.Reis.Scholarship.model.studentEntity.Student;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
@@ -42,7 +42,7 @@ public class StudentService implements StudentService_i {
     @Override
     public ResponseEntity<Void> delete(Long studentId) throws ChangeSetPersister.NotFoundException {
         Student student = studentRepo.findById(studentId)
-                .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
 
         studentRepo.delete(student);
 

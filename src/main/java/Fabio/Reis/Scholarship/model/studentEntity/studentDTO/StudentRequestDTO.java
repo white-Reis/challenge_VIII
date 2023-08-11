@@ -1,6 +1,5 @@
 package Fabio.Reis.Scholarship.model.studentEntity.studentDTO;
 
-import Fabio.Reis.Scholarship.model.teamEntity.Team;
 import lombok.Data;
 
 @Data

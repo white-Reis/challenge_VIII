@@ -1,12 +1,12 @@
 package Fabio.Reis.Scholarship.model.teamEntity.teamDTO;
 
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
-import Fabio.Reis.Scholarship.model.studentEntity.Student;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
+
+import java.util.Set;
 
 @Data
 public class TeamDTO {
@@ -16,8 +16,8 @@ public class TeamDTO {
     private int status;
     private LocalDate startDate;
     private LocalDate endDate;
-    private List<InternalDTO> coordinators;
-    private List<InternalDTO> scrumMasters;
-    private List<InternalDTO> instructors;
-    private List<StudentDTO> students;
+    private Set<InternalDTO> coordinators;
+    private Set<InternalDTO> scrumMasters;
+    private Set<InternalDTO> instructors;
+    private Set<StudentDTO> students;
 }

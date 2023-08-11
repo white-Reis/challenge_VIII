@@ -1,11 +1,20 @@
 package Fabio.Reis.Scholarship.model.studentEntity;
 
+import Fabio.Reis.Scholarship.model.squadEntity.Squad;
 import Fabio.Reis.Scholarship.model.teamEntity.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "students")
 public class Student {
@@ -23,9 +32,14 @@ public class Student {
 
     private int level;
 
-    @ManyToOne
-    @JoinColumn(name = "class_id")
+    @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
     @JsonBackReference
-    private Team team;
+    private Set<Team> teams= new HashSet<>();
 
+    @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Squad> squads = new ArrayList<>();
+    public void addSquad(Squad squad){
+        this.squads.add(squad);
+    }
 }

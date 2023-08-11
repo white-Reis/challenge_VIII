@@ -3,9 +3,15 @@ package Fabio.Reis.Scholarship.model.internalEntity;
 import Fabio.Reis.Scholarship.model.teamEntity.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+import java.util.HashSet;
+import java.util.Set;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "internals")
 public class Internal {
@@ -23,8 +29,7 @@ public class Internal {
 
     private String role;
 
-    @ManyToOne
-    @JoinColumn(name = "class_id")
+    @ManyToMany(mappedBy = "internals", fetch = FetchType.LAZY)
     @JsonBackReference
-    private Team team;
+    private Set<Team> teams = new HashSet<>();
 }

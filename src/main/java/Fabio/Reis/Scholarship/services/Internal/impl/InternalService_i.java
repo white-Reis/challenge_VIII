@@ -7,5 +7,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface InternalService_i {
     ResponseEntity<InternalDTO> create(InternalRequestDTO internalRequest);
+
     ResponseEntity<Void> delete(Long internalId) throws ChangeSetPersister.NotFoundException;
 }

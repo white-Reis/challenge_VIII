@@ -13,17 +13,19 @@ import org.springframework.web.bind.annotation.*;
 public class InternalController {
 
     private InternalService_i internalService;
-    public InternalController(InternalService_i internalService){
-        this.internalService= internalService;
+
+    InternalController(InternalService_i internalService) {
+        this.internalService = internalService;
     }
 
     @PostMapping
-    public ResponseEntity<InternalDTO> createStudent(@RequestBody InternalRequestDTO internalRequest) {
+    ResponseEntity<InternalDTO> createStudent(@RequestBody InternalRequestDTO internalRequest) {
         ResponseEntity<InternalDTO> newStudent = internalService.create(internalRequest);
         return newStudent;
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInternal(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+    ResponseEntity<Void> deleteInternal(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
         ResponseEntity<Void> deletedInternal = internalService.delete(id);
         return deletedInternal;
     }
