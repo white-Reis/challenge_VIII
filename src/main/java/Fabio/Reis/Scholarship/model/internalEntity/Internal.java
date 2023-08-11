@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,8 +29,7 @@ public class Internal {
 
     private String role;
 
-    @ManyToOne
-    @JoinColumn(name = "class_id")
+    @ManyToMany(mappedBy = "internals", fetch = FetchType.LAZY)
     @JsonBackReference
-    private Team team;
+    private Set<Team> teams = new HashSet<>();
 }

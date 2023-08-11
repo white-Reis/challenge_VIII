@@ -8,15 +8,16 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 
+
 @Data
 public class TeamRequestDTO {
     private String name;
     private String learning;
     private LocalDate startDate;
     private LocalDate endDate;
+    private List<StudentRequestDTO> students;
     private List<InternalRequestDTO> coordinators;
     private List<InternalRequestDTO> scrumMasters;
     private List<InternalRequestDTO> instructors;
-    private List<StudentRequestDTO> students;
 
 }

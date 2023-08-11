@@ -1,6 +1,5 @@
 package Fabio.Reis.Scholarship.controllers;
 
-
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamDTO;
@@ -14,59 +13,59 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/classes")
 public class TeamController {
-    private TeamService teamService;
+    private final TeamService teamService;
 
-    public TeamController(TeamService teamService) {
+    TeamController(TeamService teamService) {
         this.teamService = teamService;
     }
 
     @GetMapping
-    public ResponseEntity<List<TeamDTO>> getAllClasses() {
+    ResponseEntity<List<TeamDTO>> getAllClasses() {
         return teamService.getClasses();
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<TeamDTO> getClassById(@PathVariable Long id) {
+    ResponseEntity<TeamDTO> getClassById(@PathVariable Long id) {
         return teamService.getClassById(id);
     }
 
     @GetMapping("/{id}/instructors")
-    public ResponseEntity<List<InternalDTO>> getClassInstructors(@PathVariable Long id) {
+    ResponseEntity<List<InternalDTO>> getClassInstructors(@PathVariable Long id) {
         return teamService.getClassInstructors(id);
     }
 
     @GetMapping("/{id}/scrum-masters")
-    public ResponseEntity<List<InternalDTO>> getScrumMasters(@PathVariable Long id) {
+    ResponseEntity<List<InternalDTO>> getScrumMasters(@PathVariable Long id) {
         return teamService.getScrumMasters(id);
     }
 
     @GetMapping("/{id}/coordinators")
-    public ResponseEntity<List<InternalDTO>> getCoordinators(@PathVariable Long id) {
+    ResponseEntity<List<InternalDTO>> getCoordinators(@PathVariable Long id) {
         return teamService.getCoordinators(id);
     }
 
     @GetMapping("/{id}/students")
-    public ResponseEntity<List<StudentDTO>> getStudents(@PathVariable Long id) {
+    ResponseEntity<List<StudentDTO>> getStudents(@PathVariable Long id) {
         return teamService.getStudents(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateClass(@PathVariable Long id, @RequestBody TeamRequestDTO teamRequest) {
+    ResponseEntity<Void> updateClass(@PathVariable Long id, @RequestBody TeamRequestDTO teamRequest) {
         return teamService.updateClass(id, teamRequest);
     }
 
     @PutMapping("/{id}/start")
-    public ResponseEntity<Void> startClass(@PathVariable Long id) {
+    ResponseEntity<Void> startClass(@PathVariable Long id) {
         return teamService.startClass(id);
     }
 
     @PutMapping("/{id}/finish")
-    public ResponseEntity<Void> finishClass(@PathVariable Long id) {
+    ResponseEntity<Void> finishClass(@PathVariable Long id) {
         return teamService.finishClass(id);
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createTeamWithStudents(@RequestBody TeamRequestDTO teamRequest) {
+    ResponseEntity<Void> createTeamWithStudents(@RequestBody TeamRequestDTO teamRequest) {
         return teamService.createClassWithStudentsAndInternals(teamRequest);
     }
 

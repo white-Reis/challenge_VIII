@@ -10,5 +10,4 @@ public class StudentDTO {
     private String email;
     private String course;
     private int level;
-    private Long classId;
 }
