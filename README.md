@@ -2,7 +2,7 @@
 
 In this technical challenge, I aim to develop a RESTful API using the Spring Boot framework in Java 17 and Maven 3.0.9. The API should handle the basic operations of the four HTTP verbs: GET, POST, PUT, and DELETE. The application's domain revolves around the Compass Scholarship Program classes, allowing registration of organizers (Coordinators, instructors, and Scrum Masters), students, classes, and squads.
 
-in this project, I chose to use MySQL and create the entities, Class, Squad, Student, and internal, Lombok was used for a cleaner code, and I structured the API in three controllers, all in their "V1" version, for data validation it was validator and restrictions were used in order to make the data more concise, exception handlers were used for error handling.
+in this project, I chose to use MySQL and create the entities, Class, Squad, Student, and internal, Lombok was used for a cleaner code, and I structured the API in four controllers, all in their "V1" version, for data validation it was validator and restrictions were used in order to make the data more concise, exception handlers were used for error handling.
 
 The bank's architecture was designed to support multiple internal students in different projects and squads. It is possible to create an entire class with members or add them one by one or in lists. Squads are defined based on the experience of the students, which is measured from one to three, zero for novices, two for intermediates, and three for experts, thus being balanced so that advanced members can help the novices.
 
