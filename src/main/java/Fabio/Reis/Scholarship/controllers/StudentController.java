@@ -19,16 +19,20 @@ public class StudentController {
 
     @PostMapping
     ResponseEntity<StudentDTO> createStudent(@RequestBody StudentRequestDTO studentRequest) {
-        ResponseEntity<StudentDTO> newStudent = studentService.create(studentRequest);
-        return newStudent;
+        return studentService.create(studentRequest);
+
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteStudent(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
-        ResponseEntity<Void> deletedStudent = studentService.delete(id);
-        return deletedStudent;
+        return studentService.delete(id);
+
     }
 
+    @PutMapping("/{id}")
+    ResponseEntity<Void> updateStudent(@PathVariable Long id, @RequestBody StudentRequestDTO studentRequestDTO) throws ChangeSetPersister.NotFoundException {
+        return studentService.update(id,studentRequestDTO);
+    }
 
 }
 

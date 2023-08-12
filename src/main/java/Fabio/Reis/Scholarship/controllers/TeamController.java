@@ -25,7 +25,7 @@ public class TeamController {
     }
 
     @GetMapping("{id}")
-    ResponseEntity<TeamDTO> getClassById(@PathVariable Long id) {
+    ResponseEntity getClassById(@PathVariable Long id) {
         return teamService.getClassById(id);
     }
 

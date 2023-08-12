@@ -4,13 +4,15 @@ import Fabio.Reis.Scholarship.model.studentEntity.Student;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentRequestDTO;
 import Fabio.Reis.Scholarship.repository.StudentRepo;
+import Fabio.Reis.Scholarship.services.exceptions.DataIntegratyViolationException;
+import Fabio.Reis.Scholarship.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 @Service
 public class StudentService implements StudentService_i {
@@ -23,8 +25,13 @@ public class StudentService implements StudentService_i {
     }
 
     @Override
-    public ResponseEntity<StudentDTO> create(StudentRequestDTO internalRequest) {
-        Student student = modelMapper.map(internalRequest, Student.class);
+    public ResponseEntity<StudentDTO> create(StudentRequestDTO studentRequest) {
+        Optional<Student> existingStudentOptional = studentRepo.findByEmail(studentRequest.getEmail());
+        if (existingStudentOptional.isPresent()) {
+            throw new DataIntegratyViolationException("Student e-mail already registered");
+        }
+
+        Student student = modelMapper.map(studentRequest, Student.class);
         Student createdStudent = studentRepo.save(student);
 
         StudentDTO responseDto = modelMapper.map(createdStudent, StudentDTO.class);
@@ -36,15 +43,42 @@ public class StudentService implements StudentService_i {
                 .toUri();
 
         return ResponseEntity.created(location).body(responseDto);
+    }
 
+
+    @Override
+    public ResponseEntity<Void> update(Long studentId, StudentRequestDTO studentRequestDTO) {
+        Optional<Student> existingStudentOptional = studentRepo.findById(studentId);
+        if (existingStudentOptional.isEmpty()) {
+            throw new ObjectNotFoundException("Student not found");
+        }
+        Optional<Student> existingEmailStudentOptional = studentRepo.findByEmail(studentRequestDTO.getEmail());
+        if (existingEmailStudentOptional.isPresent()) {
+            throw new DataIntegratyViolationException("Student e-mail already registered");
+        }
+
+        Student Student = existingStudentOptional.get();
+
+        Student.setName(studentRequestDTO.getName());
+        Student.setLastName(studentRequestDTO.getLastName());
+        Student.setEmail(studentRequestDTO.getEmail());
+        Student.setCourse(studentRequestDTO.getCourse());
+        Student.setLevel(studentRequestDTO.getLevel());
+
+        studentRepo.save(Student);
+
+        return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<Void> delete(Long studentId) throws ChangeSetPersister.NotFoundException {
-        Student student = studentRepo.findById(studentId)
-                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+    public ResponseEntity<Void> delete(Long id) {
+        Optional<Student> studentOptional = studentRepo.findById(id);
+        if (studentOptional.isPresent()) {
+            throw new ObjectNotFoundException("Student not found");
+        }
 
-        studentRepo.delete(student);
+
+        studentRepo.delete(studentOptional.get());
 
         return ResponseEntity.noContent().build();
     }

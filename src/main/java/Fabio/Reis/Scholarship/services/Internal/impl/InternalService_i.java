@@ -9,4 +9,5 @@ public interface InternalService_i {
     ResponseEntity<InternalDTO> create(InternalRequestDTO internalRequest);
 
     ResponseEntity<Void> delete(Long internalId) throws ChangeSetPersister.NotFoundException;
+    ResponseEntity<Void> update(Long internalId,InternalRequestDTO internalRequestDTO) throws ChangeSetPersister.NotFoundException;
 }

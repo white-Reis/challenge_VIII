@@ -22,24 +22,30 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     private String name;
+
 
     private String lastName;
 
+
     private String email;
 
+
     private String course;
+
 
     private int level;
 
     @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
     @JsonBackReference
-    private Set<Team> teams= new HashSet<>();
+    private Set<Team> teams = new HashSet<>();
 
     @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Squad> squads = new ArrayList<>();
-    public void addSquad(Squad squad){
+
+    public void addSquad(Squad squad) {
         this.squads.add(squad);
     }
 }

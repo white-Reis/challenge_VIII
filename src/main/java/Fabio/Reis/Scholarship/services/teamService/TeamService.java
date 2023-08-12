@@ -31,7 +31,6 @@ public class TeamService implements TeamService_i {
     private final TeamRepo teamRepo;
     private final StudentRepo studentRepo;
     private final InternalRepo internalRepo;
-
     private final SquadRepo squadRepo;
     private final ModelMapper modelMapper;
 

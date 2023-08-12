@@ -2,7 +2,6 @@ package Fabio.Reis.Scholarship.model.teamEntity.teamDTO;
 
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.squadEntity.squadDTO.SquadDTO;
-import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import lombok.Data;
 
 import java.time.LocalDate;

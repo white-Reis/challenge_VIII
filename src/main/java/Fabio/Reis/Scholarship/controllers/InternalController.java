@@ -29,6 +29,12 @@ public class InternalController {
         ResponseEntity<Void> deletedInternal = internalService.delete(id);
         return deletedInternal;
     }
+
+    @PutMapping("/{id}")
+    ResponseEntity<Void> updateInternal(@PathVariable Long id, @RequestBody InternalRequestDTO internalRequest) throws ChangeSetPersister.NotFoundException {
+        return internalService.update(id, internalRequest);
+    }
 }
+
 
 

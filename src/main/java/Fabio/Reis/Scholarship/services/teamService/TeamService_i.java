@@ -7,7 +7,6 @@ import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamRequestDTO;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TeamService_i {
 
