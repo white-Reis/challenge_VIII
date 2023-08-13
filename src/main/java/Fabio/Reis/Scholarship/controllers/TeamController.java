@@ -1,5 +1,6 @@
 package Fabio.Reis.Scholarship.controllers;
 
+import Fabio.Reis.Scholarship.model.Commons.IdsList;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamDTO;
@@ -52,6 +53,16 @@ public class TeamController {
     @PutMapping("/{id}")
     ResponseEntity<Void> updateClass(@PathVariable Long id, @RequestBody TeamRequestDTO teamRequest) {
         return teamService.updateClass(id, teamRequest);
+    }
+
+    @PutMapping("/{id}/internals")
+    ResponseEntity<Void> addInternals(@PathVariable Long id, @RequestBody IdsList internalsIds) {
+        return teamService.addInternalsByIds(id, internalsIds);
+    }
+
+    @PutMapping("/{id}/students")
+    ResponseEntity<Void> addStudents(@PathVariable Long id, @RequestBody IdsList internalsIds) {
+        return teamService.addStudentByIds(id, internalsIds);
     }
 
     @PutMapping("/{id}/start")

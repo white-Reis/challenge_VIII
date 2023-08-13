@@ -1,5 +1,9 @@
 package Fabio.Reis.Scholarship.services.teamService;
 
+import Fabio.Reis.Scholarship.exceptions.ClassRuleException;
+import Fabio.Reis.Scholarship.exceptions.DataIntegratyViolationException;
+import Fabio.Reis.Scholarship.exceptions.ObjectNotFoundException;
+import Fabio.Reis.Scholarship.model.Commons.IdsList;
 import Fabio.Reis.Scholarship.model.internalEntity.Internal;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalRequestDTO;
@@ -16,11 +20,16 @@ import Fabio.Reis.Scholarship.repository.InternalRepo;
 import Fabio.Reis.Scholarship.repository.SquadRepo;
 import Fabio.Reis.Scholarship.repository.StudentRepo;
 import Fabio.Reis.Scholarship.repository.TeamRepo;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,27 +43,30 @@ public class TeamService implements TeamService_i {
     private final SquadRepo squadRepo;
     private final ModelMapper modelMapper;
 
-    public TeamService(TeamRepo teamRepo, StudentRepo studentRepo, InternalRepo internalRepo, ModelMapper modelMapper, SquadRepo squadRepo) {
+    private final Validator validator;
+
+    public TeamService(TeamRepo teamRepo, StudentRepo studentRepo, InternalRepo internalRepo, ModelMapper modelMapper, SquadRepo squadRepo, Validator validator) {
         this.teamRepo = teamRepo;
         this.studentRepo = studentRepo;
         this.internalRepo = internalRepo;
         this.squadRepo = squadRepo;
         this.modelMapper = modelMapper;
+        this.validator = validator;
     }
 
     @Override
-    public ResponseEntity getClassById(Long id) {
+    public ResponseEntity<?> getClassById(Long id) {
         Optional<Team> team = teamRepo.findById(id);
         if (team.isPresent()) {
             if (team.get().getStatus() != 0) {
-                TeamStartedDTO teamStartedDTO = mapInternalsStartedDTO(team.get());
+                TeamStartedDTO teamStartedDTO = mapInternalsStartedTeamDTO(team.get());
                 return ResponseEntity.status(HttpStatus.FOUND).body(teamStartedDTO);
             } else {
-                TeamDTO teamDTO = mapInternalsDTO(team.get());
+                TeamDTO teamDTO = mapInternalsTeamDTO(team.get());
                 return ResponseEntity.status(HttpStatus.FOUND).body(teamDTO);
             }
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ObjectNotFoundException("Class not found");
         }
     }
 
@@ -64,7 +76,7 @@ public class TeamService implements TeamService_i {
         List<TeamDTO> teamDTOs = new ArrayList<>();
 
         for (Team team : teams) {
-            teamDTOs.add(mapInternalsDTO(team));
+            teamDTOs.add(mapInternalsTeamDTO(team));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(teamDTOs);
@@ -75,11 +87,11 @@ public class TeamService implements TeamService_i {
         Optional<Team> teamOptional = teamRepo.findById(id);
 
         if (teamOptional.isPresent()) {
-            TeamDTO teamDTO = mapInternalsDTO(teamOptional.get());
+            TeamDTO teamDTO = mapInternalsTeamDTO(teamOptional.get());
             List<InternalDTO> instructorsDTO = new ArrayList<>(teamDTO.getInstructors());
             return ResponseEntity.status(HttpStatus.OK).body(instructorsDTO);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ObjectNotFoundException("Class not found");
         }
     }
 
@@ -89,11 +101,11 @@ public class TeamService implements TeamService_i {
         Optional<Team> teamOptional = teamRepo.findById(id);
 
         if (teamOptional.isPresent()) {
-            TeamDTO teamDTO = mapInternalsDTO(teamOptional.get());
+            TeamDTO teamDTO = mapInternalsTeamDTO(teamOptional.get());
             List<InternalDTO> scrumMastersDTO = new ArrayList<>(teamDTO.getScrumMasters());
             return ResponseEntity.status(HttpStatus.OK).body(scrumMastersDTO);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ObjectNotFoundException("Class not found");
         }
     }
 
@@ -102,11 +114,11 @@ public class TeamService implements TeamService_i {
         Optional<Team> teamOptional = teamRepo.findById(id);
 
         if (teamOptional.isPresent()) {
-            TeamDTO teamDTO = mapInternalsDTO(teamOptional.get());
+            TeamDTO teamDTO = mapInternalsTeamDTO(teamOptional.get());
             List<InternalDTO> coordinatorsDTO = new ArrayList<>(teamDTO.getCoordinators());
             return ResponseEntity.status(HttpStatus.OK).body(coordinatorsDTO);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ObjectNotFoundException("Class not found");
         }
     }
 
@@ -115,11 +127,11 @@ public class TeamService implements TeamService_i {
         Optional<Team> teamOptional = teamRepo.findById(id);
 
         if (teamOptional.isPresent()) {
-            TeamDTO teamDTO = mapInternalsDTO(teamOptional.get());
+            TeamDTO teamDTO = mapInternalsTeamDTO(teamOptional.get());
             List<StudentDTO> studentsDTO = new ArrayList<>(teamDTO.getStudents());
             return ResponseEntity.status(HttpStatus.OK).body(studentsDTO);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ObjectNotFoundException("Class not found");
         }
     }
 
@@ -127,30 +139,26 @@ public class TeamService implements TeamService_i {
     @Override
     public ResponseEntity<Void> updateClass(Long id, TeamRequestDTO teamRequest) {
         Optional<Team> teamOptional = teamRepo.findById(id);
-
         if (teamOptional.isPresent()) {
-            Team team = mapInternalsToTeam(teamOptional.get(), teamRequest);
-            team.setName(teamRequest.getName());
-            team.setLearning(teamRequest.getLearning());
+            if (teamOptional.get().getStatus() != 0) {
+                throw new ClassRuleException("Class already Started");
+            }
+            if (teamRequest.getName() == null) {
+                teamRequest.setName(teamOptional.get().getName());
+            }
+            if (teamRequest.getLearning() == null) {
+                teamRequest.setLearning(teamOptional.get().getLearning());
+            }
+            validTeam(teamRequest, validator);
 
-            if (teamRequest.getStudents() != null) {
-                addNewStudents(team, teamRequest.getStudents());
-            }
-            if (teamRequest.getInstructors() != null) {
-                addNewInternals(team, teamRequest);
-            }
-            if (teamRequest.getCoordinators() != null) {
-                addNewInternals(team, teamRequest);
-            }
-            if (teamRequest.getScrumMasters() != null) {
-                addNewInternals(team, teamRequest);
-            }
+            Team team = teamOptional.get();
+            mapTeamRequestDTOToTeam(team, teamRequest);
 
             teamRepo.save(team);
 
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ObjectNotFoundException("Class not found");
         }
     }
 
@@ -158,8 +166,20 @@ public class TeamService implements TeamService_i {
     @Override
     public ResponseEntity<Void> startClass(Long id) {
         Optional<Team> teamOptional = teamRepo.findById(id);
-
         if (teamOptional.isPresent()) {
+            TeamDTO teamDTO = mapInternalsTeamDTO(teamOptional.get());
+            if (teamOptional.get().getStatus() != 0) {
+                throw new ClassRuleException("Class already Started");
+            }
+            if (teamDTO.getStudents().size() < 15) {
+                throw new ClassRuleException("Class must have at least fifteen students");
+            }
+            if (teamDTO.getStudents().size() > 30) {
+                throw new ClassRuleException("The class must have a maximum of thirty students");
+            }
+            if (teamDTO.getCoordinators().size() < 1 || teamDTO.getScrumMasters().size() < 1 || teamDTO.getInstructors().size() < 3) {
+                throw new ClassRuleException("The class must have at least one scrum master, one coordinator, and three instructors | Total of Coordinators: " + teamDTO.getCoordinators().size() + " | Total of Scrum Masters: " + teamDTO.getScrumMasters().size() + " | Total of Instructors: " + teamDTO.getInstructors().size());
+            }
             Team team = teamOptional.get();
             team.setStatus(1);
             team.setStartDate(LocalDate.now());
@@ -261,7 +281,7 @@ public class TeamService implements TeamService_i {
 
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ObjectNotFoundException("Class not found");
         }
     }
 
@@ -270,6 +290,13 @@ public class TeamService implements TeamService_i {
         Optional<Team> teamOptional = teamRepo.findById(id);
 
         if (teamOptional.isPresent()) {
+
+            if (teamOptional.get().getStatus() == 0) {
+                throw new ClassRuleException("class needs to be started");
+            }
+            if (teamOptional.get().getStatus() == 2) {
+                throw new ClassRuleException("class already finished");
+            }
             Team team = teamOptional.get();
             team.setStatus(2);
             team.setEndDate(LocalDate.now());
@@ -278,60 +305,92 @@ public class TeamService implements TeamService_i {
 
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ObjectNotFoundException("Class not found");
         }
     }
 
 
     @Override
     public ResponseEntity<Void> createClassWithStudentsAndInternals(TeamRequestDTO teamRequest) {
+        validTeam(teamRequest, validator);
+        for (InternalRequestDTO internal: teamRequest.getInternals()){
+            validInternal(internal,validator);
+        }for (StudentRequestDTO student: teamRequest.getStudents()){
+            validStudent(student,validator);
+        }
+        if (teamRequest.getStudents().size() > 30) {
+            throw new ClassRuleException("The class must have a maximum of thirty students");
+        }
+
         Team teamEntity = modelMapper.map(teamRequest, Team.class);
         teamEntity.setStatus(0);
 
-        mapAndSetStudents(teamEntity, teamRequest.getStudents());
+        try {
+            Team createdTeam = teamRepo.save(teamEntity);
 
-        mapAndSetInternals(teamEntity, teamRequest.getCoordinators(), "Coordinator");
-        mapAndSetInternals(teamEntity, teamRequest.getScrumMasters(), "Scrum Master");
-        mapAndSetInternals(teamEntity, teamRequest.getInstructors(), "Instructor");
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createdTeam.getId())
+                    .toUri();
 
-        teamRepo.save(teamEntity);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
-    }
-
-
-    private void mapAndSetStudents(Team team, List<StudentRequestDTO> studentsRequest) {
-        Set<Student> students = new HashSet<>();
-
-        for (StudentRequestDTO studentRequest : studentsRequest) {
-            Student student = modelMapper.map(studentRequest, Student.class);
-            student.getTeams().add(team);
-            students.add(student);
+            return ResponseEntity.created(location).build();
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegratyViolationException("Repeated or already registered emails");
         }
-
-        team.setStudents(students);
     }
 
-    private void mapAndSetInternals(Team team, List<InternalRequestDTO> internalsRequest, String role) {
-        Set<Internal> internals = new HashSet<>();
 
-        for (InternalRequestDTO internalRequest : internalsRequest) {
-            Internal internal = modelMapper.map(internalRequest, Internal.class);
-            internal.setRole(role);
-            internals.add(internal);
+    public ResponseEntity<Void> addInternalsByIds(Long id, IdsList internalsIds) {
+        Optional<Team> team = teamRepo.findById(id);
+        if (team.isPresent()) {
+            for (Long internalId : internalsIds.getIds()) {
+                Optional<Internal> internal = internalRepo.findById(internalId);
+                if (internal.isPresent()) {
+                    internal.get().getTeams().add(team.get());
+                    team.get().getInternals().add(internal.get());
+                    internalRepo.save(internal.get());
+                } else {
+                    throw new ObjectNotFoundException("Internal not found for id: " + internalId);
+                }
+            }
+            teamRepo.save(team.get());
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } else {
+            throw new ObjectNotFoundException("Class not found");
         }
-        Set<Internal> currentInternals = team.getInternals();
-        internals.addAll(currentInternals);
-        team.setInternals(internals);
     }
 
-    private TeamDTO mapInternalsDTO(Team team) {
+    @Override
+    public ResponseEntity<Void> addStudentByIds(Long id, IdsList studentsIds) {
+        Optional<Team> team = teamRepo.findById(id);
+        if (team.isPresent()) {
+            for (Long studentId : studentsIds.getIds()) {
+                Optional<Student> student = studentRepo.findById(studentId);
+                if (student.isPresent()) {
+                    student.get().getTeams().add(team.get());
+                    team.get().getStudents().add(student.get());
+                    studentRepo.save(student.get());
+                } else {
+                    throw new ObjectNotFoundException("Student not found for id: " + studentId);
+                }
+            }
+            teamRepo.save(team.get());
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+
+        } else {
+            throw new ObjectNotFoundException("Class not found");
+        }
+    }
+
+
+    private TeamDTO mapInternalsTeamDTO(Team team) {
         TeamDTO teamDTO = new TeamDTO();
 
         teamDTO.setId(team.getId());
         teamDTO.setName(team.getName());
         teamDTO.setLearning(team.getLearning());
-        teamDTO.setStatus(team.getStatus());
+        teamDTO.setStatus(getStatus(team.getStatus()));
 
         Set<InternalDTO> coordinatorDTOs = team.getInternals().stream()
                 .filter(internal -> "Coordinator".equalsIgnoreCase(internal.getRole()))
@@ -362,13 +421,15 @@ public class TeamService implements TeamService_i {
         return teamDTO;
     }
 
-    private TeamStartedDTO mapInternalsStartedDTO(Team team) {
+    private TeamStartedDTO mapInternalsStartedTeamDTO(Team team) {
         TeamStartedDTO teamDTO = new TeamStartedDTO();
 
         teamDTO.setId(team.getId());
         teamDTO.setName(team.getName());
         teamDTO.setLearning(team.getLearning());
-        teamDTO.setStatus(team.getStatus());
+        teamDTO.setStatus(getStatus(team.getStatus()));
+        teamDTO.setStartDate(team.getStartDate());
+        teamDTO.setEndDate(team.getEndDate());
 
         Set<InternalDTO> coordinatorDTOs = team.getInternals().stream()
                 .filter(internal -> "Coordinator".equalsIgnoreCase(internal.getRole()))
@@ -400,73 +461,80 @@ public class TeamService implements TeamService_i {
     }
 
 
-    private Team mapInternalsToTeam(Team team, TeamRequestDTO teamRequestDTO) {
+    private void mapTeamRequestDTOToTeam(Team team, TeamRequestDTO teamRequestDTO) {
         Set<Internal> internals = team.getInternals();
+        Set<Student> students = team.getStudents();
 
-        if (teamRequestDTO.getCoordinators() != null) {
-            for (InternalRequestDTO coordinatorRequest : teamRequestDTO.getCoordinators()) {
-                Internal coordinator = modelMapper.map(coordinatorRequest, Internal.class);
-                coordinator.setRole("Coordinator");
-                internals.add(coordinator);
-            }
-        }
-
-        if (teamRequestDTO.getScrumMasters() != null) {
-            for (InternalRequestDTO scrumMasterRequest : teamRequestDTO.getScrumMasters()) {
-                Internal scrumMaster = modelMapper.map(scrumMasterRequest, Internal.class);
-                scrumMaster.setRole("Scrum Master");
-                internals.add(scrumMaster);
-            }
-        }
-
-        if (teamRequestDTO.getInstructors() != null) {
-            for (InternalRequestDTO instructorRequest : teamRequestDTO.getInstructors()) {
-                Internal instructor = modelMapper.map(instructorRequest, Internal.class);
-                instructor.setRole("Instructor");
-                internals.add(instructor);
-            }
-        }
+        internals.addAll(getInternalsFromRequest(teamRequestDTO.getInternals(), team));
+        students.addAll(getStudentFromRequest(teamRequestDTO.getStudents(), team));
 
         team.setInternals(internals);
-        return team;
     }
 
+    private Set<Student> getStudentFromRequest(List<StudentRequestDTO> studentRequests, Team team) {
+        return studentRequests.stream()
+                .peek(studentRequest -> validStudent(studentRequest, validator))
+                .map(studentRequest -> {
+                    Student student = modelMapper.map(studentRequest, Student.class);
+                    student.setTeams(Collections.singleton(team));
+                    studentRepo.save(student);
+                    return student;
+                })
+                .collect(Collectors.toSet());
+    }
 
-    private void addNewStudents(Team team, List<StudentRequestDTO> studentsRequest) {
-        for (StudentRequestDTO studentRequest : studentsRequest) {
-            Student student = modelMapper.map(studentRequest, Student.class);
-            student.getTeams().add(team);
-            studentRepo.save(student);
+    private Set<Internal> getInternalsFromRequest(List<InternalRequestDTO> internalRequests, Team team) {
+        return internalRequests.stream()
+                .peek(internalRequest -> validInternal(internalRequest, validator))
+                .map(internalRequest -> {
+                    Internal internal = modelMapper.map(internalRequest, Internal.class);
+                    internal.setRole(internalRequest.getRole());
+                    internal.setTeams(Collections.singleton(team));
+                    internalRepo.save(internal);
+                    return internal;
+                })
+                .collect(Collectors.toSet());
+    }
+
+    private String getStatus(int status) {
+        return switch (status) {
+            case 0 -> "Waiting";
+            case 1 -> "Started";
+            case 2 -> "Finished";
+            default -> "Unknown";
+        };
+    }
+
+    public static void validTeam(TeamRequestDTO teamRequest, Validator validator) {
+        Set<ConstraintViolation<TeamRequestDTO>> violations = validator.validate(teamRequest);
+        if (!violations.isEmpty()) {
+            List<String> errorMessages = new ArrayList<>();
+            for (ConstraintViolation<TeamRequestDTO> violation : violations) {
+                errorMessages.add(violation.getPropertyPath() + ": " + violation.getMessage());
+            }
+            throw new DataIntegratyViolationException(errorMessages.toString());
         }
     }
 
-
-    private void addNewInternals(Team team, TeamRequestDTO teamRequestDTO) {
-        if (teamRequestDTO.getCoordinators() != null) {
-            for (InternalRequestDTO internalRequest : teamRequestDTO.getCoordinators()) {
-                Internal internal = modelMapper.map(internalRequest, Internal.class);
-                internal.setRole("Coordinator");
-                internal.setTeams(Collections.singleton(team));
-                internalRepo.save(internal);
+    public static void validInternal(InternalRequestDTO internalRequest, Validator validator) {
+        Set<ConstraintViolation<InternalRequestDTO>> violations = validator.validate(internalRequest);
+        if (!violations.isEmpty()) {
+            List<String> errorMessages = new ArrayList<>();
+            for (ConstraintViolation<InternalRequestDTO> violation : violations) {
+                errorMessages.add(violation.getPropertyPath() + ": " + violation.getMessage());
             }
+            throw new DataIntegratyViolationException(errorMessages.toString());
         }
+    }
 
-        if (teamRequestDTO.getScrumMasters() != null) {
-            for (InternalRequestDTO internalRequest : teamRequestDTO.getScrumMasters()) {
-                Internal internal = modelMapper.map(internalRequest, Internal.class);
-                internal.setRole("Scrum Master");
-                internal.setTeams(Collections.singleton(team));
-                internalRepo.save(internal);
+    public static void validStudent(StudentRequestDTO studentRequest, Validator validator) {
+        Set<ConstraintViolation<StudentRequestDTO>> violations = validator.validate(studentRequest);
+        if (!violations.isEmpty()) {
+            List<String> errorMessages = new ArrayList<>();
+            for (ConstraintViolation<StudentRequestDTO> violation : violations) {
+                errorMessages.add(violation.getPropertyPath() + ": " + violation.getMessage());
             }
-        }
-
-        if (teamRequestDTO.getInstructors() != null) {
-            for (InternalRequestDTO internalRequest : teamRequestDTO.getInstructors()) {
-                Internal internal = modelMapper.map(internalRequest, Internal.class);
-                internal.setRole("Instructor");
-                internal.setTeams(Collections.singleton(team));
-                internalRepo.save(internal);
-            }
+            throw new DataIntegratyViolationException(errorMessages.toString());
         }
     }
 }

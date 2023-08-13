@@ -18,8 +18,7 @@ public class TeamRequestDTO {
     private String learning;
 
     private List<StudentRequestDTO> students;
-    private List<InternalRequestDTO> coordinators;
-    private List<InternalRequestDTO> scrumMasters;
-    private List<InternalRequestDTO> instructors;
+    private List<InternalRequestDTO> internals;
+
 
 }

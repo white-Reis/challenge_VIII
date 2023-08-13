@@ -4,8 +4,8 @@ import Fabio.Reis.Scholarship.model.internalEntity.Internal;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalRequestDTO;
 import Fabio.Reis.Scholarship.repository.InternalRepo;
-import Fabio.Reis.Scholarship.services.exceptions.DataIntegratyViolationException;
-import Fabio.Reis.Scholarship.services.exceptions.ObjectNotFoundException;
+import Fabio.Reis.Scholarship.exceptions.DataIntegratyViolationException;
+import Fabio.Reis.Scholarship.exceptions.ObjectNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.modelmapper.ModelMapper;
@@ -36,14 +36,7 @@ public class InternalService implements InternalService_i {
 
     @Override
     public ResponseEntity<InternalDTO> create(InternalRequestDTO internalRequest) {
-        Set<ConstraintViolation<InternalRequestDTO>> violations = validator.validate(internalRequest);
-        if (!violations.isEmpty()) {
-            List<String> errorMessages = new ArrayList<>();
-            for (ConstraintViolation<InternalRequestDTO> violation : violations) {
-                errorMessages.add(violation.getPropertyPath() + ": " + violation.getMessage());
-            }
-            throw new DataIntegratyViolationException(errorMessages.toString());
-        }
+        validInternal(internalRequest, validator);
         Optional<Internal> internalOptional = internalRepo.findByEmail(internalRequest.getEmail());
         if (internalOptional.isPresent()) {
             throw new DataIntegratyViolationException("Internal already registered");
@@ -65,14 +58,7 @@ public class InternalService implements InternalService_i {
 
     @Override
     public ResponseEntity<Void> update(Long internalId, InternalRequestDTO internalRequest) throws ChangeSetPersister.NotFoundException {
-        Set<ConstraintViolation<InternalRequestDTO>> violations = validator.validate(internalRequest);
-        if (!violations.isEmpty()) {
-            List<String> errorMessages = new ArrayList<>();
-            for (ConstraintViolation<InternalRequestDTO> violation : violations) {
-                errorMessages.add(violation.getPropertyPath() + ": " + violation.getMessage());
-            }
-            throw new DataIntegratyViolationException(errorMessages.toString());
-        }
+        validInternal(internalRequest, validator);
         Optional<Internal> existinginternalOptional = internalRepo.findById(internalId);
         if (existinginternalOptional.isEmpty()) {
             throw new ObjectNotFoundException("Internal not found");
@@ -93,6 +79,7 @@ public class InternalService implements InternalService_i {
         return ResponseEntity.noContent().build();
     }
 
+
     @Override
     public ResponseEntity<Void> delete(Long id) throws ChangeSetPersister.NotFoundException {
         Optional<Internal> internalOptional = internalRepo.findById(id);
@@ -103,5 +90,15 @@ public class InternalService implements InternalService_i {
 
         return ResponseEntity.noContent().build();
     }
-}
 
+    public static void validInternal(InternalRequestDTO internalRequest, Validator validator) {
+        Set<ConstraintViolation<InternalRequestDTO>> violations = validator.validate(internalRequest);
+        if (!violations.isEmpty()) {
+            List<String> errorMessages = new ArrayList<>();
+            for (ConstraintViolation<InternalRequestDTO> violation : violations) {
+                errorMessages.add(violation.getPropertyPath() + ": " + violation.getMessage());
+            }
+            throw new DataIntegratyViolationException(errorMessages.toString());
+        }
+    }
+}

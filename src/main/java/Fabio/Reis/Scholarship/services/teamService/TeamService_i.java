@@ -1,5 +1,6 @@
 package Fabio.Reis.Scholarship.services.teamService;
 
+import Fabio.Reis.Scholarship.model.Commons.IdsList;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamDTO;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface TeamService_i {
 
-    ResponseEntity<TeamDTO> getClassById(Long id);
+    ResponseEntity<?> getClassById(Long id);
 
     ResponseEntity<List<TeamDTO>> getClasses();
 
@@ -29,4 +30,8 @@ public interface TeamService_i {
     ResponseEntity<Void> finishClass(Long id);
 
     ResponseEntity<Void> createClassWithStudentsAndInternals(TeamRequestDTO teamRequest);
+
+    ResponseEntity<Void> addInternalsByIds(Long id, IdsList internalsIds);
+
+    ResponseEntity<Void> addStudentByIds(Long id, IdsList studentsIds);
 }

@@ -13,9 +13,7 @@ public class TeamDTO {
     private Long id;
     private String name;
     private String learning;
-    private int status;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String status;
     private Set<InternalDTO> coordinators;
     private Set<InternalDTO> scrumMasters;
     private Set<InternalDTO> instructors;

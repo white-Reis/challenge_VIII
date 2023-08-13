@@ -1,4 +1,4 @@
-package Fabio.Reis.Scholarship.services.exceptions;
+package Fabio.Reis.Scholarship.exceptions;
 
 public class ObjectNotFoundException extends RuntimeException {
     public ObjectNotFoundException(String message) {

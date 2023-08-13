@@ -1,4 +1,4 @@
-package Fabio.Reis.Scholarship.services.exceptions;
+package Fabio.Reis.Scholarship.exceptions;
 
 public class DataIntegratyViolationException extends RuntimeException {
     public DataIntegratyViolationException(String message) {

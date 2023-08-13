@@ -1,6 +1,6 @@
 package Fabio.Reis.Scholarship.model.studentEntity.studentDTO;
 
-import Fabio.Reis.Scholarship.validation.noNumbers.NoNumbers;
+import Fabio.Reis.Scholarship.annotations.noNumbers.NoNumbers;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

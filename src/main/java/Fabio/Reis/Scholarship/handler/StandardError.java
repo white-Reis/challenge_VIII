@@ -1,4 +1,4 @@
-package Fabio.Reis.Scholarship.controllers.exceptions;
+package Fabio.Reis.Scholarship.handler;
 
 import lombok.*;
 

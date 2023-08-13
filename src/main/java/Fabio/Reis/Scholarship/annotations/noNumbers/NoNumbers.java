@@ -1,4 +1,4 @@
-package Fabio.Reis.Scholarship.validation.noNumbers;
+package Fabio.Reis.Scholarship.annotations.noNumbers;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

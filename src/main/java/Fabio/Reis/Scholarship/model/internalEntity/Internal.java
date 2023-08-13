@@ -23,6 +23,7 @@ public class Internal {
 
     private String lastName;
 
+    @Column(unique = true)
     private String email;
 
     private String position;
