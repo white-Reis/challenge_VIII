@@ -3,10 +3,12 @@ package Fabio.Reis.Scholarship.services.Internal.impl;
 import Fabio.Reis.Scholarship.model.internalEntity.Internal;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalRequestDTO;
+import Fabio.Reis.Scholarship.model.studentEntity.Student;
 import Fabio.Reis.Scholarship.model.teamEntity.Team;
 import Fabio.Reis.Scholarship.repository.InternalRepo;
 import Fabio.Reis.Scholarship.exceptions.DataIntegratyViolationException;
 import Fabio.Reis.Scholarship.exceptions.ObjectNotFoundException;
+import Fabio.Reis.Scholarship.repository.StudentRepo;
 import Fabio.Reis.Scholarship.repository.TeamRepo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -29,20 +31,24 @@ public class InternalService implements InternalService_i {
     private final TeamRepo teamRepo;
     private final ModelMapper modelMapper;
     private final Validator validator;
+    private final StudentRepo studentRepo;
 
-    public InternalService(InternalRepo internalRepo, TeamRepo teamRepo, ModelMapper modelMapper, Validator validator) {
+    public InternalService(InternalRepo internalRepo, TeamRepo teamRepo, ModelMapper modelMapper, Validator validator,
+                           StudentRepo studentRepo) {
         this.internalRepo = internalRepo;
         this.teamRepo = teamRepo;
         this.modelMapper = modelMapper;
         this.validator = validator;
 
+        this.studentRepo = studentRepo;
     }
 
     @Override
     public ResponseEntity<InternalDTO> create(InternalRequestDTO internalRequest) {
         validInternal(internalRequest, validator);
         Optional<Internal> internalOptional = internalRepo.findByEmail(internalRequest.getEmail());
-        if (internalOptional.isPresent()) {
+        Optional<Student> studentOptional = studentRepo.findByEmail(internalRequest.getEmail());
+        if (internalOptional.isPresent()||studentOptional.isPresent()) {
             throw new DataIntegratyViolationException("Internal already registered");
         }
         Internal internal = modelMapper.map(internalRequest, Internal.class);

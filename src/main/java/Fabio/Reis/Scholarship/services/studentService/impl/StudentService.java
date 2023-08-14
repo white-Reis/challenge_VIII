@@ -1,10 +1,12 @@
 package Fabio.Reis.Scholarship.services.studentService.impl;
 
+import Fabio.Reis.Scholarship.model.internalEntity.Internal;
 import Fabio.Reis.Scholarship.model.squadEntity.Squad;
 import Fabio.Reis.Scholarship.model.studentEntity.Student;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentRequestDTO;
 import Fabio.Reis.Scholarship.model.teamEntity.Team;
+import Fabio.Reis.Scholarship.repository.InternalRepo;
 import Fabio.Reis.Scholarship.repository.SquadRepo;
 import Fabio.Reis.Scholarship.repository.StudentRepo;
 import Fabio.Reis.Scholarship.exceptions.DataIntegratyViolationException;
@@ -26,14 +28,16 @@ import java.util.Set;
 @Service
 public class StudentService implements StudentService_i {
     private final StudentRepo studentRepo;
+    private final InternalRepo internalRepo;
     private final TeamRepo teamRepo;
     private final SquadRepo squadRepo;
     private final ModelMapper modelMapper;
 
     private final Validator validator;
 
-    public StudentService(StudentRepo studentRepo, TeamRepo teamRepo, SquadRepo squadRepo, ModelMapper modelMapper, Validator validator) {
+    public StudentService(StudentRepo studentRepo, InternalRepo internalRepo, TeamRepo teamRepo, SquadRepo squadRepo, ModelMapper modelMapper, Validator validator) {
         this.studentRepo = studentRepo;
+        this.internalRepo = internalRepo;
         this.teamRepo = teamRepo;
         this.squadRepo = squadRepo;
         this.modelMapper = modelMapper;
@@ -44,7 +48,8 @@ public class StudentService implements StudentService_i {
     public ResponseEntity<StudentDTO> create(StudentRequestDTO studentRequest) {
         validStudent(studentRequest,validator);
         Optional<Student> existingStudentOptional = studentRepo.findByEmail(studentRequest.getEmail());
-        if (existingStudentOptional.isPresent()) {
+        Optional<Internal> internalOptional = internalRepo.findByEmail(studentRequest.getEmail());
+        if (existingStudentOptional.isPresent()||internalOptional.isPresent()) {
             throw new DataIntegratyViolationException("Student e-mail already registered");
         }
 
