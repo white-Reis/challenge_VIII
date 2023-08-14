@@ -19,7 +19,6 @@ public class LocalConfigTest {
 
     @Test
     public void testStartDB() {
-        // Check that the bean is created
         assertThat(localConfig).isNotNull();
 
     }
