@@ -67,13 +67,11 @@ To use the collection:
 ______________________________________________________________________________________________________________________________________________________________________________________________________________________________
 ## :zap:Testing
 
- Run the automated tests by executing the following command:
+Run the automated tests by executing the following command:
+   ```bash
+   mvn test
 
-     ```bash
-      mvn test
-      
-This will help ensure the correctness of the application's features.
-
+````      
 ______________________________________________________________________________________________________________________________________________________________________________________________________________________________
 ## 🚀Technologies
 
@@ -90,5 +88,5 @@ ________________________________________________________________________________
 ### :mechanical_arm:Considerations
 
 
-Feel free to copy and paste this into your README file. If you need any further assistance or modifications, please let me know!
+feel free to use this project and modify!
 
