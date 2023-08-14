@@ -6,7 +6,11 @@ in this project, I chose to use MySQL and create the entities, Class, Squad, Stu
 
 The bank's architecture was designed to support multiple internal students in different projects and squads. It is possible to create an entire class with members or add them one by one or in lists. Squads are defined based on the experience of the students, which is measured from one to three, zero for novices, two for intermediates, and three for experts, thus being balanced so that advanced members can help the novices.
 
+Classes can only be initiated with fifteen students, one Scrum Master, one Coordinator, and three Instructors. There were multiple ways to create a class, either by creating a fully formed class directly, or by creating a class and students without a direct link and then adding their IDs in the form of a list. It is possible to remove students and internals, which removes them from their respective classes. For security, the system prevents the creation of duplicate email addresses.
 
+Upon initiating a class, the students are divided equally into teams or groups, with a leveling mechanism that balances them based on their experience level, measured from one to three: no experience, novice, and experienced.
+
+Each class records its start and completion dates when initiated and concluded respectively. Once a class is initiated, it cannot be modified, but interns can be added through a dedicated route.
 
 ## 🔑 Mandatory requirements
 
@@ -16,7 +20,7 @@ The bank's architecture was designed to support multiple internal students in di
 - Minimum 3 branches.
 - Minimum 5 commits.
 
-## Table of Contents
+## :closed_book: Table of Contents
 
 - [Getting Started](#getting-started)
 - [Prerequisites](#prerequisites)
@@ -25,21 +29,51 @@ The bank's architecture was designed to support multiple internal students in di
 - [Endpoints](#endpoints)
 - [Testing](#testing)
 - [Technologies](#technologies)
-## Getting Started
+- [Considerations](#Considerations)
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________
+#### :vulcan_salute:Getting Started
 
-### Prerequisites
+## :memo:Prerequisites
 
 - Java 17
 - Maven 3.0.9
 - MySQL database
-- Git
+- Postman
 
-### Installation
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## :hammer_and_wrench:Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/white-Reis/compass-scholarship-api.git
    cd compass-scholarship-api
+   mvn clean install
+   mvn spring-boot:run
+
+If you don't have Maven installed, you can download it from here - https://maven.apache.org/download.cgi
+
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________
+## :round_pushpin:EndPoints
+
+You can use the Postman collection to interact with the Compass Scholarship Program API. Download the Postman collection by clicking the link below:
+
+[Download Postman Collection](https://www.postman.com/speeding-equinox-52035/workspace/compass2023/collection/27688899-bcce56e9-ade6-4b72-b8fe-897066dc0dbd?action=share&creator=27688899)
+
+To use the collection:
+1. Open Postman.
+2. Import the downloaded collection.
+3. Follow the API requests and responses to interact with the endpoints.
+
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________
+###:zap:Testing
+
+ Run the automated tests by executing the following command:
+
+     ```bash
+      mvn test
+      
+This will help ensure the correctness of the application's features.
+
 ______________________________________________________________________________________________________________________________________________________________________________________________________________________________
 ## 🚀Technologies
 
@@ -47,4 +81,14 @@ ________________________________________________________________________________
 - Maven 4.0.0
 - MySQL database
 - Git
-- SPRING BOOT 3.0.9
+- Spring Boot 3.0.9
+- Validator
+- Lombok
+- JPA (Java Persistence API)
+- ModelMapper
+
+### :mechanical_arm:Considerations
+
+
+Feel free to copy and paste this into your README file. If you need any further assistance or modifications, please let me know!
+
