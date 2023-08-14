@@ -1,12 +1,15 @@
 package Fabio.Reis.Scholarship.services.studentService.impl;
 
-import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalRequestDTO;
+import Fabio.Reis.Scholarship.model.squadEntity.Squad;
 import Fabio.Reis.Scholarship.model.studentEntity.Student;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentRequestDTO;
+import Fabio.Reis.Scholarship.model.teamEntity.Team;
+import Fabio.Reis.Scholarship.repository.SquadRepo;
 import Fabio.Reis.Scholarship.repository.StudentRepo;
 import Fabio.Reis.Scholarship.exceptions.DataIntegratyViolationException;
 import Fabio.Reis.Scholarship.exceptions.ObjectNotFoundException;
+import Fabio.Reis.Scholarship.repository.TeamRepo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.modelmapper.ModelMapper;
@@ -23,12 +26,16 @@ import java.util.Set;
 @Service
 public class StudentService implements StudentService_i {
     private final StudentRepo studentRepo;
+    private final TeamRepo teamRepo;
+    private final SquadRepo squadRepo;
     private final ModelMapper modelMapper;
 
     private final Validator validator;
 
-    public StudentService(StudentRepo studentRepo, ModelMapper modelMapper, Validator validator) {
+    public StudentService(StudentRepo studentRepo, TeamRepo teamRepo, SquadRepo squadRepo, ModelMapper modelMapper, Validator validator) {
         this.studentRepo = studentRepo;
+        this.teamRepo = teamRepo;
+        this.squadRepo = squadRepo;
         this.modelMapper = modelMapper;
         this.validator = validator;
     }
@@ -84,12 +91,20 @@ public class StudentService implements StudentService_i {
     @Override
     public ResponseEntity<Void> delete(Long id) {
         Optional<Student> studentOptional = studentRepo.findById(id);
-        if (studentOptional.isPresent()) {
+        if (!studentOptional.isPresent()) {
             throw new ObjectNotFoundException("Student not found");
         }
 
-
+        for (Team team : studentOptional.get().getTeams()) {
+            team.getStudents().remove(studentOptional.get());
+            teamRepo.save(team);
+        }
+        for (Squad squad : studentOptional.get().getSquads()) {
+            squad.getStudents().remove(studentOptional.get());
+            squadRepo.save(squad);
+        }
         studentRepo.delete(studentOptional.get());
+
 
         return ResponseEntity.noContent().build();
     }

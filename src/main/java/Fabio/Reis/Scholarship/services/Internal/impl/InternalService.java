@@ -3,9 +3,11 @@ package Fabio.Reis.Scholarship.services.Internal.impl;
 import Fabio.Reis.Scholarship.model.internalEntity.Internal;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalRequestDTO;
+import Fabio.Reis.Scholarship.model.teamEntity.Team;
 import Fabio.Reis.Scholarship.repository.InternalRepo;
 import Fabio.Reis.Scholarship.exceptions.DataIntegratyViolationException;
 import Fabio.Reis.Scholarship.exceptions.ObjectNotFoundException;
+import Fabio.Reis.Scholarship.repository.TeamRepo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.modelmapper.ModelMapper;
@@ -24,11 +26,13 @@ import java.util.Set;
 public class InternalService implements InternalService_i {
 
     private final InternalRepo internalRepo;
+    private final TeamRepo teamRepo;
     private final ModelMapper modelMapper;
     private final Validator validator;
 
-    public InternalService(InternalRepo internalRepo, ModelMapper modelMapper, Validator validator) {
+    public InternalService(InternalRepo internalRepo, TeamRepo teamRepo, ModelMapper modelMapper, Validator validator) {
         this.internalRepo = internalRepo;
+        this.teamRepo = teamRepo;
         this.modelMapper = modelMapper;
         this.validator = validator;
 
@@ -83,11 +87,14 @@ public class InternalService implements InternalService_i {
     @Override
     public ResponseEntity<Void> delete(Long id) throws ChangeSetPersister.NotFoundException {
         Optional<Internal> internalOptional = internalRepo.findById(id);
-        if (internalOptional.isPresent()) {
+        if (!internalOptional.isPresent()) {
             throw new ObjectNotFoundException("Internal not found");
         }
+        for (Team team : internalOptional.get().getTeams()) {
+            team.getInternals().remove(internalOptional.get());
+            teamRepo.save(team);
+        }
         internalRepo.delete(internalOptional.get());
-
         return ResponseEntity.noContent().build();
     }
 
