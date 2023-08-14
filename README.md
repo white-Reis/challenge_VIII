@@ -31,7 +31,7 @@ Each class records its start and completion dates when initiated and concluded r
 - [Technologies](#technologies)
 - [Considerations](#Considerations)
 ______________________________________________________________________________________________________________________________________________________________________________________________________________________________
-#### :vulcan_salute:Getting Started
+# :vulcan_salute:Getting Started
 
 ## :memo:Prerequisites
 
@@ -65,7 +65,7 @@ To use the collection:
 3. Follow the API requests and responses to interact with the endpoints.
 
 ______________________________________________________________________________________________________________________________________________________________________________________________________________________________
-###:zap:Testing
+## :zap:Testing
 
  Run the automated tests by executing the following command:
 
