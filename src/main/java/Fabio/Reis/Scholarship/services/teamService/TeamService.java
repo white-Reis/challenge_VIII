@@ -365,6 +365,9 @@ public class TeamService implements TeamService_i {
     public ResponseEntity<Void> addStudentByIds(Long id, IdsList studentsIds) {
         Optional<Team> team = teamRepo.findById(id);
         if (team.isPresent()) {
+                if (team.get().getStatus() != 0) {
+                    throw new ClassRuleException("Class already Started");
+                }
             for (Long studentId : studentsIds.getIds()) {
                 Optional<Student> student = studentRepo.findById(studentId);
                 if (student.isPresent()) {

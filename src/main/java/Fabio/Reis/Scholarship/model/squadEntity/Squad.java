@@ -31,7 +31,7 @@ public class Squad {
     )
     private List<Student> students = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "class_id")
     @JsonBackReference
     private Team team;

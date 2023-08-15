@@ -103,6 +103,14 @@ public class LocalConfig {
         student3.setEmail("Rafael.Ferreira@compass.com");
         students.add(student3);
 
+        Student student4 = new Student();
+        student3.setName("Rafaela");
+        student3.setLastName("Ferir");
+        student3.setLevel(2);
+        student3.setCourse("Software Engineering");
+        student3.setEmail("Rafaela.Ferir@compass.com");
+        students.add(student3);
+
         Student student5 = new Student();
         student5.setName("Lucas");
         student5.setLastName("Santos");
