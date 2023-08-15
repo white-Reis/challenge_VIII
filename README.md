@@ -57,7 +57,7 @@ ________________________________________________________________________________
 
 You can use the Postman collection to interact with the Compass Scholarship Program API. Download the Postman collection by clicking the link below:
 
-[Download Postman Collection](https://www.postman.com/speeding-equinox-52035/workspace/compass2023/collection/27688899-bcce56e9-ade6-4b72-b8fe-897066dc0dbd?action=share&creator=27688899)
+[Postman Collection](https://www.postman.com/speeding-equinox-52035/workspace/compass2023/collection/27688899-bcce56e9-ade6-4b72-b8fe-897066dc0dbd?action=share&creator=27688899)
 
 To use the collection:
 1. Open Postman.
