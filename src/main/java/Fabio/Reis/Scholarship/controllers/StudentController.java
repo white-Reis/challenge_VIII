@@ -2,7 +2,7 @@ package Fabio.Reis.Scholarship.controllers;
 
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentRequestDTO;
-import Fabio.Reis.Scholarship.services.studentService.impl.StudentService_i;
+import Fabio.Reis.Scholarship.services.studentService.impl.StudentService;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/students")
 public class StudentController {
 
-    private final StudentService_i studentService;
+    private final StudentService studentService;
 
-    StudentController(StudentService_i studentService) {
+    StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
 

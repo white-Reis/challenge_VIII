@@ -2,7 +2,7 @@ package Fabio.Reis.Scholarship.controllers;
 
 import Fabio.Reis.Scholarship.model.squadEntity.squadDTO.SquadDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
-import Fabio.Reis.Scholarship.services.squadService.impl.SquadService;
+import Fabio.Reis.Scholarship.services.squadService.impl.SquadServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +38,7 @@ class SquadControllerTest {
     private SquadController squadController;
 
     @Mock
-    private SquadService squadService;
+    private SquadServiceImpl squadServiceImpl;
 
     @Spy
     private ModelMapper modelMapper;
@@ -58,7 +58,7 @@ class SquadControllerTest {
         squads.add(new SquadDTO(2l,"Beta Squad",students));
 
         ResponseEntity<List<SquadDTO>> responseEntity = new ResponseEntity<>(squads, HttpStatus.OK);
-            when(squadService.getSquads()).thenReturn(responseEntity);
+            when(squadServiceImpl.getSquads()).thenReturn(responseEntity);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/squads")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -76,7 +76,7 @@ class SquadControllerTest {
         Set<StudentDTO> students = new HashSet<>();
         SquadDTO squad = new SquadDTO(1l,"Alpha Squad",students);
         ResponseEntity<SquadDTO> responseEntity = new ResponseEntity<>(squad, HttpStatus.OK);
-        when(squadService.findById(squadId)).thenReturn(responseEntity);
+        when(squadServiceImpl.findById(squadId)).thenReturn(responseEntity);
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/squads/{id}", squadId)
                 .contentType(MediaType.APPLICATION_JSON);

@@ -1,7 +1,7 @@
 package Fabio.Reis.Scholarship.controllers;
 
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentRequestDTO;
-import Fabio.Reis.Scholarship.services.studentService.impl.StudentService;
+import Fabio.Reis.Scholarship.services.studentService.impl.StudentServiceImpl;
 import Fabio.Reis.Scholarship.utils.JsonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class StudentControllerTest {
     private StudentController studentController;
 
     @Mock
-    private StudentService studentService;
+    private StudentServiceImpl studentServiceImpl;
 
     @Spy
     private ModelMapper modelMapper;
@@ -51,7 +51,7 @@ class StudentControllerTest {
         String payLoad = JsonUtils.readFileAsString(STUDENT);
         StudentRequestDTO studentDTO = JsonUtils.getObjectFromFile(STUDENT, StudentRequestDTO.class);
 
-        when(studentService.create(any())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).build());
+        when(studentServiceImpl.create(any())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).build());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/students")
                 .content(payLoad)
@@ -65,7 +65,7 @@ class StudentControllerTest {
     void deleteStudent() throws Exception {
         Long studentId = 1L;
 
-        when(studentService.delete(anyLong())).thenReturn(ResponseEntity.noContent().build());
+        when(studentServiceImpl.delete(anyLong())).thenReturn(ResponseEntity.noContent().build());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/v1/students/{id}", studentId);
 
@@ -78,7 +78,7 @@ class StudentControllerTest {
         Long studentId = 1L;
         String payLoad = JsonUtils.readFileAsString(STUDENT);
 
-        when(studentService.update(eq(studentId), any(StudentRequestDTO.class)))
+        when(studentServiceImpl.update(eq(studentId), any(StudentRequestDTO.class)))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders

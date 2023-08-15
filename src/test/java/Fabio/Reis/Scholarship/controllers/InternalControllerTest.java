@@ -3,7 +3,7 @@ package Fabio.Reis.Scholarship.controllers;
 
 
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalRequestDTO;
-import Fabio.Reis.Scholarship.services.Internal.impl.InternalService;
+import Fabio.Reis.Scholarship.services.Internal.impl.InternalServiceImpl;
 import Fabio.Reis.Scholarship.utils.JsonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class InternalControllerTest {
     private InternalController internalController;
 
     @Mock
-    private InternalService internalService;
+    private InternalServiceImpl internalServiceImpl;
 
     @Spy
     private ModelMapper modelMapper;
@@ -55,7 +55,7 @@ class InternalControllerTest {
     void createInternalSucess() throws Exception {
         String payLoad = JsonUtils.readFileAsString(INTERNAL);
         InternalRequestDTO internalDTO = JsonUtils.getObjectFromFile(INTERNAL, InternalRequestDTO.class);
-       when(internalService.create(any())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).build());
+       when(internalServiceImpl.create(any())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).build());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/internals").content(payLoad).contentType(MediaType.APPLICATION_JSON);
 
@@ -69,7 +69,7 @@ class InternalControllerTest {
     void deleteInternal() throws Exception {
         Long internalId = 1L;
 
-        when(internalService.delete(anyLong())).thenReturn(ResponseEntity.noContent().build());
+        when(internalServiceImpl.delete(anyLong())).thenReturn(ResponseEntity.noContent().build());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/v1/internals/{id}", internalId);
 
@@ -82,7 +82,7 @@ class InternalControllerTest {
         Long internalId = 1L;
         String payLoad = JsonUtils.readFileAsString(INTERNAL);
 
-        when(internalService.update(eq(internalId), any(InternalRequestDTO.class)))
+        when(internalServiceImpl.update(eq(internalId), any(InternalRequestDTO.class)))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders

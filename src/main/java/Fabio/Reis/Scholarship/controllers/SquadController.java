@@ -1,7 +1,7 @@
 package Fabio.Reis.Scholarship.controllers;
 
 import Fabio.Reis.Scholarship.model.squadEntity.squadDTO.SquadDTO;
-import Fabio.Reis.Scholarship.services.squadService.impl.SquadService;
+import Fabio.Reis.Scholarship.services.squadService.impl.SquadServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,20 +13,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/squads")
 public class SquadController {
-    private final SquadService squadService;
+    private final SquadServiceImpl squadServiceImpl;
 
-    SquadController(SquadService squadService) {
-        this.squadService = squadService;
+    SquadController(SquadServiceImpl squadServiceImpl) {
+        this.squadServiceImpl = squadServiceImpl;
     }
 
     @GetMapping
     ResponseEntity<List<SquadDTO>> getSquads() {
-        return squadService.getSquads();
+        return squadServiceImpl.getSquads();
     }
 
     @GetMapping("{id}")
     ResponseEntity<SquadDTO> getSquadById(@PathVariable Long id) {
-        return squadService.findById(id);
+        return squadServiceImpl.findById(id);
     }
 
 }
