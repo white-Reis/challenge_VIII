@@ -87,6 +87,7 @@ ________________________________________________________________________________
 
 ### :mechanical_arm:Considerations
 
+When starting the application, some data is automatically saved, they will generate conflicts if the database is not cleaned when starting the application again.
 
 feel free to use this project and modify!
 
