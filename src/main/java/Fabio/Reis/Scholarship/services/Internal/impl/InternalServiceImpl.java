@@ -100,7 +100,7 @@ public class InternalServiceImpl implements InternalService {
     }
 
     @Override
-    public ResponseEntity<List<InternalDTO>> getAll(Long internalId) {
+    public ResponseEntity<List<InternalDTO>> getAll() {
         List<Internal> internals = internalRepo.findAll();
         List<InternalDTO> internalDTOs = new ArrayList<>();
 

@@ -15,6 +15,6 @@ public interface InternalService {
     ResponseEntity<Void> update(Long internalId,InternalRequestDTO internalRequestDTO);
 
     ResponseEntity<InternalDTO> getById(Long internalId);
-    ResponseEntity<List<InternalDTO>> getAll(Long internalId);
+    ResponseEntity<List<InternalDTO>> getAll();
 
 }

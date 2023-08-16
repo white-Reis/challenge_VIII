@@ -60,7 +60,7 @@ class SquadControllerTest {
         ResponseEntity<List<SquadDTO>> responseEntity = new ResponseEntity<>(squads, HttpStatus.OK);
             when(squadServiceImpl.getSquads()).thenReturn(responseEntity);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/squads")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/v1/squads")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder)
@@ -78,7 +78,7 @@ class SquadControllerTest {
         ResponseEntity<SquadDTO> responseEntity = new ResponseEntity<>(squad, HttpStatus.OK);
         when(squadServiceImpl.findById(squadId)).thenReturn(responseEntity);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/squads/{id}", squadId)
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/v1/squads/{id}", squadId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder)

@@ -1,8 +1,11 @@
 package Fabio.Reis.Scholarship.model.studentEntity.studentDTO;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class StudentDTO {
     private Long id;
 
@@ -15,4 +18,5 @@ public class StudentDTO {
     private String course;
 
     private int level;
+
 }

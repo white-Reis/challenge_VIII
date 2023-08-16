@@ -1,8 +1,11 @@
 package Fabio.Reis.Scholarship.model.internalEntity.internaDTO;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class InternalDTO {
     private Long id;
     private String name;
