@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,7 +77,7 @@ class TeamControllerTest {
         ResponseEntity<TeamsToStatus> responseEntity = new ResponseEntity<>(teamsToStatus, HttpStatus.OK);
         when(teamServiceImpl.getClasses()).thenReturn(responseEntity);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/classes")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/v1/classes")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder)
@@ -103,12 +104,15 @@ class TeamControllerTest {
         ResponseEntity responseEntity = new ResponseEntity<>(team, HttpStatus.OK);
         when(teamServiceImpl.getClassById(classId)).thenReturn(responseEntity);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/classes/{id}", classId)
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/v1/classes/{id}", classId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Class A"));
+
+        verify(teamServiceImpl).getClassById(anyLong());
+
     }
 
     @Test
@@ -124,7 +128,7 @@ class TeamControllerTest {
         ResponseEntity responseEntity = new ResponseEntity<>(instructors, HttpStatus.OK);
         when(teamServiceImpl.getClassInstructors(classId)).thenReturn(responseEntity);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/classes/{id}/instructors", classId)
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/v1/classes/{id}/instructors", classId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder)
@@ -144,7 +148,7 @@ class TeamControllerTest {
         ResponseEntity responseEntity = new ResponseEntity<>(scrumMasters, HttpStatus.OK);
         when(teamServiceImpl.getScrumMasters(classId)).thenReturn(responseEntity);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/classes/{id}/scrum-masters", classId)
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/v1/classes/{id}/scrum-masters", classId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder)
@@ -164,7 +168,7 @@ class TeamControllerTest {
         ResponseEntity responseEntity = new ResponseEntity<>(coordinators, HttpStatus.OK);
         when(teamServiceImpl.getCoordinators(classId)).thenReturn(responseEntity);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/classes/{id}/coordinators", classId)
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/v1/classes/{id}/coordinators", classId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder)
@@ -184,7 +188,7 @@ class TeamControllerTest {
         ResponseEntity responseEntity = new ResponseEntity<>(students, HttpStatus.OK);
         when(teamServiceImpl.getStudents(classId)).thenReturn(responseEntity);
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/classes/{id}/students", classId)
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/v1/classes/{id}/students", classId)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder)
@@ -200,7 +204,7 @@ class TeamControllerTest {
         when(teamServiceImpl.updateClass(eq(teamId), any(TeamRequestDTO.class)))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        MockHttpServletRequestBuilder builder = put("/v1/classes/{id}", teamId)
+        MockHttpServletRequestBuilder builder = put("/api/v1/classes/{id}", teamId)
                 .content(payLoad)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -220,7 +224,7 @@ class TeamControllerTest {
 
         when(teamServiceImpl.addInternalsByIds(anyLong(), any(IdsList.class))).thenReturn(ResponseEntity.ok().build());
 
-        mockMvc.perform(put("/v1/classes/{id}/internals", 1L)
+        mockMvc.perform(put("/api/v1/classes/{id}/internals", 1L)
                         .content(payLoad)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -238,7 +242,7 @@ class TeamControllerTest {
 
         when(teamServiceImpl.addStudentByIds(anyLong(), any(IdsList.class))).thenReturn(ResponseEntity.ok().build());
 
-        mockMvc.perform(put("/v1/classes/{id}/students", 1L)
+        mockMvc.perform(put("/api/v1/classes/{id}/students", 1L)
                         .content(payLoad)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -252,7 +256,7 @@ class TeamControllerTest {
         when(teamServiceImpl.startClass(eq(teamId)))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        MockHttpServletRequestBuilder builder = put("/v1/classes/{id}/start", teamId)
+        MockHttpServletRequestBuilder builder = put("/api/v1/classes/{id}/start", teamId)
                 .content(payLoad)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -268,7 +272,7 @@ class TeamControllerTest {
         when(teamServiceImpl.finishClass(eq(teamId)))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        MockHttpServletRequestBuilder builder = put("/v1/classes/{id}/finish", teamId)
+        MockHttpServletRequestBuilder builder = put("/api/v1/classes/{id}/finish", teamId)
                 .content(payLoad)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -282,9 +286,45 @@ class TeamControllerTest {
         TeamRequestDTO teamDTO = JsonUtils.getObjectFromFile(TEAM, TeamRequestDTO.class);
         when(teamServiceImpl.createClassWithStudentsAndInternals(any())).thenReturn(ResponseEntity.status(HttpStatus.CREATED).build());
 
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/classes").content(payLoad).contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/api/v1/classes").content(payLoad).contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isCreated());
 
+        verify(teamServiceImpl).createClassWithStudentsAndInternals(any(TeamRequestDTO.class));
+
+    }
+
+
+    @Test
+    void removeInternals() throws Exception {
+        Long teamId = 1L;
+        String payload = JsonUtils.readFileAsString("idsList/idlist.Json");
+
+        IdsList internalsIds = new IdsList();
+        internalsIds.setIds(Set.of(1L, 2L, 3L));
+
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/api/v1/classes/{id}/internals", teamId)
+                .content(payload)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void removeStudents() throws Exception {
+        Long teamId = 1L;
+        String payload = JsonUtils.readFileAsString("idsList/idlist.Json");
+
+        IdsList studentsIds = new IdsList();
+        studentsIds.setIds(Set.of(1L, 2L, 3L));
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/api/v1/classes/{id}/students", teamId)
+                .content(payload)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder)
+                .andExpect(status().isOk());
     }
 }
