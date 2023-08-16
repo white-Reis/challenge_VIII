@@ -3,18 +3,21 @@ package Fabio.Reis.Scholarship.controllers;
 
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalRequestDTO;
-import Fabio.Reis.Scholarship.services.Internal.impl.InternalService_i;
+import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
+import Fabio.Reis.Scholarship.services.Internal.impl.InternalService;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/v1/internals")
+@RequestMapping("api/v1/internals")
 public class InternalController {
 
-    private InternalService_i internalService;
+    private InternalService internalService;
 
-    InternalController(InternalService_i internalService) {
+    InternalController(InternalService internalService) {
         this.internalService = internalService;
     }
 
@@ -34,7 +37,17 @@ public class InternalController {
     ResponseEntity<Void> updateInternal(@PathVariable Long id, @RequestBody InternalRequestDTO internalRequest) throws ChangeSetPersister.NotFoundException {
         return internalService.update(id, internalRequest);
     }
-}
+        @GetMapping
+        ResponseEntity<List<InternalDTO>> getAllInternals() {
+            return internalService.getAll();
+        }
+
+        @GetMapping("{id}")
+        ResponseEntity<InternalDTO> geInternalById(@PathVariable Long id) {
+            return internalService.getById(id);
+        }
+    }
+
 
 
 

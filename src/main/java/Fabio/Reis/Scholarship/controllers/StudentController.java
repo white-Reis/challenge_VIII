@@ -2,18 +2,20 @@ package Fabio.Reis.Scholarship.controllers;
 
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentRequestDTO;
-import Fabio.Reis.Scholarship.services.studentService.impl.StudentService_i;
+import Fabio.Reis.Scholarship.services.studentService.impl.StudentService;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/v1/students")
+@RequestMapping("api/v1/students")
 public class StudentController {
 
-    private final StudentService_i studentService;
+    private final StudentService studentService;
 
-    StudentController(StudentService_i studentService) {
+    StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
 
@@ -31,7 +33,17 @@ public class StudentController {
 
     @PutMapping("/{id}")
     ResponseEntity<Void> updateStudent(@PathVariable Long id, @RequestBody StudentRequestDTO studentRequestDTO) throws ChangeSetPersister.NotFoundException {
-        return studentService.update(id,studentRequestDTO);
+        return studentService.update(id, studentRequestDTO);
+    }
+
+    @GetMapping
+    ResponseEntity<List<StudentDTO>> getAllStudents() {
+        return studentService.getAll();
+    }
+
+    @GetMapping("{id}")
+    ResponseEntity<StudentDTO> geStudentById(@PathVariable Long id) {
+        return studentService.getById(id);
     }
 
 }

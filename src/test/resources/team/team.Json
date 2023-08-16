@@ -1,0 +1,64 @@
+{
+  "name": "Test Team",
+  "learning": "aws",
+  "students": [
+    {
+      "name": "Alice",
+      "lastName": "Silva",
+      "email": "student1@compass.com",
+      "course": "Computer Science",
+      "level": 3
+    },
+    {
+      "name": "Bruno",
+      "lastName": "Santos",
+      "email": "student2@compass.com",
+      "course": "Software Engineering",
+      "level": 3
+    },
+    {
+      "name": "Carla",
+      "lastName": "Ferreira",
+      "email": "student3@compass.com",
+      "course": "Computer Engineering",
+      "level": 2
+    },
+    {
+      "name": "Daniel",
+      "lastName": "Oliveira",
+      "email": "student4@compass.com",
+      "course": "Computer Science",
+      "level": 4
+    },
+    {
+      "name": "Eduarda",
+      "lastName": "Martins",
+      "email": "student5@compass.com",
+      "course": "Software Engineering",
+      "level": 3
+    }
+  ],
+  "internals": [
+    {
+      "name": "Mariana",
+      "lastName": "Ribeiro",
+      "email": "coordinator1@compass.com",
+      "position": "Training Coordinator",
+      "role": "Coordinator"
+    },
+    {
+      "name": "Pedro",
+      "lastName": "Almeida",
+      "email": "coordinator2@compass.com",
+      "position": "Scrum Master",
+      "role": "Scrum Master"
+    },
+    {
+      "name": "Sofia",
+      "lastName": "Pereira",
+      "email": "instructor1@compass.com",
+      "position": "Instructor",
+      "role": "Instructor"
+    }
+  ]
+}

@@ -1,11 +1,14 @@
 package Fabio.Reis.Scholarship.model.Commons;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class IdsList {
     Set<Long> ids= new HashSet<>();
 }
