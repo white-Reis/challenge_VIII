@@ -87,7 +87,7 @@ ________________________________________________________________________________
 
 ### :mechanical_arm:Considerations
 
-When starting the application, some data is automatically saved, so there is no chance of error due to unique keys generated, the configuration in the application properties is like "spring.jpa.hibernate.ddl-auto=create-drop" if you want to keep your data saves will need to change to "spring.jpa.hibernate.ddl-auto=update" they will generate conflicts if the database is not cleaned up before starting the application again.
+When starting the application, some data is automatically saved, so there is chance of error due to unique keys generated, the configuration in the application properties is like "spring.jpa.hibernate.ddl-auto=create-drop" if you want to keep your data saves will need to change to "spring.jpa.hibernate.ddl-auto=update" they will generate conflicts if the database is not cleaned up before starting the application again.
 
 feel free to use this project and modify!
 
