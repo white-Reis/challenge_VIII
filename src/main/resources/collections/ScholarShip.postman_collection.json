@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "bcce56e9-ade6-4b72-b8fe-897066dc0dbd",
+		"name": "ScholarShip",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "27688899",
+		"_collection_link": "https://www.postman.com/speeding-equinox-52035/workspace/compass2023/collection/27688899-bcce56e9-ade6-4b72-b8fe-897066dc0dbd?action=share&source=collection_link&creator=27688899"
+	},
+	"item": [
+		{
+			"name": "Classes",
+			"item": [
+				{
+					"name": "Gets specifics",
+					"item": [
+						{
+							"name": "Get intructors by classID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/api/v1/classes/1/instructors"
+							},
+							"response": []
+						},
+						{
+							"name": "Get scrumMasters by classID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/api/v1/classes/1/scrum-masters"
+							},
+							"response": []
+						},
+						{
+							"name": "Get coordinators by classID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/api/v1/classes/1/coordinators"
+							},
+							"response": []
+						},
+						{
+							"name": "Get students by classID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/api/v1/classes/1/students"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create Class",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"name\": \"Test Team\",\r\n        \"learning\": \"aws\",\r\n        \"students\": [\r\n            {\r\n                \"name\": \"Alice\",\r\n                \"lastName\": \"Silva\",\r\n                \"email\": \"student1@compass.com\",\r\n                \"course\": \"Computer Science\",\r\n                \"level\": 3\r\n            },\r\n            {\r\n                \"name\": \"Bruno\",\r\n                \"lastName\": \"Santos\",\r\n                \"email\": \"student2@compass.com\",\r\n                \"course\": \"Software Engineering\",\r\n                \"level\": 3\r\n            },\r\n            {\r\n                \"name\": \"Carla\",\r\n                \"lastName\": \"Ferreira\",\r\n                \"email\": \"student3@compass.com\",\r\n                \"course\": \"Computer Engineering\",\r\n                \"level\": 2\r\n            },\r\n            {\r\n                \"name\": \"Daniel\",\r\n                \"lastName\": \"Oliveira\",\r\n                \"email\": \"student4@compass.com\",\r\n                \"course\": \"Computer Science\",\r\n                \"level\": 2\r\n            },\r\n            {\r\n                \"name\": \"Eduarda\",\r\n                \"lastName\": \"Martins\",\r\n                \"email\": \"student5@compass.com\",\r\n                \"course\": \"Software Engineering\",\r\n                \"level\": 3\r\n            }\r\n        ],\r\n        \"internals\": [\r\n            {\r\n                \"name\": \"Mariana\",\r\n                \"lastName\": \"Ribeiro\",\r\n                \"email\": \"coordinator1@compass.com\",\r\n                \"position\": \"Training Coordinator\",\r\n                \"role\": \"Coordinator\"\r\n            },\r\n            {\r\n                \"name\": \"Pedro\",\r\n                \"lastName\": \"Almeida\",\r\n                \"email\": \"coordinator2@compass.com\",\r\n                \"position\": \"Scrum Master\",\r\n                \"role\": \"Scrum Master\"\r\n            },\r\n            {\r\n                \"name\": \"Sofia\",\r\n                \"lastName\": \"Pereira\",\r\n                \"email\": \"instructor1@compass.com\",\r\n                \"position\": \"Instructor\",\r\n                \"role\": \"Instructor\"\r\n            }\r\n        ]\r\n    }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/classes"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all classes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/api/v1/classes"
+					},
+					"response": []
+				},
+				{
+					"name": "Get class by ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/classes/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Start class",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": "localhost:8080/api/v1/classes/1/start"
+					},
+					"response": []
+				},
+				{
+					"name": "Finish class",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": "localhost:8080/api/v1/classes/1/finish"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Class and add members",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"name\":\"Updated name\"\r\n ,\r\n \"students\": [\r\n    {\"name\": \"Rodolfo\", \"lastName\": \"smith\", \"email\": \"rodolfo@compass.com\",\"course\":\"Computer Cience\", \"level\":3}, {\"name\": \"Ricardo\", \"lastName\": \"Lopes\", \"email\": \"ricardo@compass.com\",\"course\":\"Computer Cience\", \"level\":2}\r\n ],\r\n  \"internals\": [\r\n    {\"name\": \"Roberto\", \"lastName\": \"Silva\", \"email\": \"RobertoInterno@compass.com\",\"role\":\"Instructor\",\"position\":\"DBA\"}\r\n  ]\r\n\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/classes/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Add students in class",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\":[\r\n        1,2,3,4,5\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/classes/1/students"
+					},
+					"response": []
+				},
+				{
+					"name": "Add internals in class",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\":[\r\n        1,2,3,4,5,6,7,8\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/classes/1/internals"
+					},
+					"response": []
+				},
+				{
+					"name": "remove internals in class Copy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\":[\r\n        1\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/classes/1/internals"
+					},
+					"response": []
+				},
+				{
+					"name": "remove internals in class Copy 2",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\":[\r\n        1\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/classes/1/students"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Squads",
+			"item": [
+				{
+					"name": "Get all squads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/api/v1/squads"
+					},
+					"response": []
+				},
+				{
+					"name": "Get squad by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/api/v1/squads/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Students",
+			"item": [
+				{
+					"name": "Create Student",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Caique\",\r\n  \"lastName\": \"Smith\",\r\n  \"email\": \"caique.smith@example.com\",\r\n  \"course\": \"Computer Science\",\r\n  \"level\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/students"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Caique\",\r\n  \"lastName\": \"Smith\",\r\n  \"email\": \"caique.smith@example.com\",\r\n  \"course\": \"Computer Science\",\r\n  \"level\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/students/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8080/api/v1/students/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/api/v1/students"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Students by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/api/v1/students/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Internals",
+			"item": [
+				{
+					"name": "Create Internal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"John\",\r\n  \"lastName\": \"silva\",\r\n  \"email\": \"john.Silva@example.com\",\r\n  \"position\": \"Software Engineer\",\r\n  \"role\": \"Instructor\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/internals"
+					},
+					"response": []
+				},
+				{
+					"name": "Update internal",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"John\",\r\n  \"lastName\": \"Silva\",\r\n  \"email\": \"john.Silva@example.com\",\r\n  \"position\": \"Software Engineer\",\r\n  \"role\": \"Instructor\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/api/v1/internals/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete internal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8080/api/v1/internals/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Get internals",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/api/v1/internals"
+					},
+					"response": []
+				},
+				{
+					"name": "Get internals by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/api/v1/internals/1"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
