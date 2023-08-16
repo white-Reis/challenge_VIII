@@ -43,7 +43,6 @@ public class TeamServiceImpl implements TeamService {
     private final InternalRepo internalRepo;
     private final SquadRepo squadRepo;
     private final ModelMapper modelMapper;
-
     private final Validator validator;
 
     public TeamServiceImpl(TeamRepo teamRepo, StudentRepo studentRepo, InternalRepo internalRepo, ModelMapper modelMapper, SquadRepo squadRepo, Validator validator) {
@@ -206,7 +205,7 @@ public class TeamServiceImpl implements TeamService {
             students.sort(Comparator.comparingInt(Student::getLevel));
             if (students.size() == 15) {
                 List<Squad> squadList = new ArrayList<>();
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i <= 2; i++) {
                     Squad squad = new Squad();
                     squad.setName("Squad-" + i);
                     squadRepo.save(squad);
@@ -223,12 +222,12 @@ public class TeamServiceImpl implements TeamService {
                         y++;
                     }
                 }
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i <= 3; i++) {
                     squadRepo.save(squadList.get(i));
                 }
             } else if (students.size() > 15 && students.size() <= 20) {
                 List<Squad> squadList = new ArrayList<>();
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i <= 3; i++) {
                     Squad squad = new Squad();
                     squad.setName("Squad-" + i);
                     squadRepo.save(squad);
@@ -239,41 +238,18 @@ public class TeamServiceImpl implements TeamService {
                     student.addSquad(squadList.get(y));
                     squadList.get(y).getStudents().add(student);
                     squadList.get(y).setTeam(team);
-                    if (y == 4) {
+                    if (y == 3) {
                         y = 0;
                     } else {
                         y++;
                     }
                 }
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i <= 3; i++) {
                     squadRepo.save(squadList.get(i));
                 }
-            } else if (students.size() >= 20 && students.size() < 25) {
+            } else if (students.size() >= 20 && students.size() <= 25) {
                 List<Squad> squadList = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    Squad squad = new Squad();
-                    squad.setName("Squad-" + i);
-                    squadRepo.save(squad);
-                    squadList.add(squad);
-                }
-                int y = 0;
-                for (Student student : students) {
-                    student.addSquad(squadList.get(y));
-                    squadList.get(y).getStudents().add(student);
-                    squadList.get(y).setTeam(team);
-                    squadRepo.save(squadList.get(y));
-                    if (y == 4) {
-                        y = 0;
-                    } else {
-                        y++;
-                    }
-                }
-                for (int i = 0; i < 5; i++) {
-                    squadRepo.save(squadList.get(i));
-                }
-            } else {
-                List<Squad> squadList = new ArrayList<>();
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i <= 4; i++) {
                     Squad squad = new Squad();
                     squad.setName("Squad-" + i);
                     squadRepo.save(squad);
@@ -291,7 +267,30 @@ public class TeamServiceImpl implements TeamService {
                         y++;
                     }
                 }
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i <= 4; i++) {
+                    squadRepo.save(squadList.get(i));
+                }
+            } else {
+                List<Squad> squadList = new ArrayList<>();
+                for (int i = 0; i <= 5; i++) {
+                    Squad squad = new Squad();
+                    squad.setName("Squad-" + i);
+                    squadRepo.save(squad);
+                    squadList.add(squad);
+                }
+                int y = 0;
+                for (Student student : students) {
+                    student.addSquad(squadList.get(y));
+                    squadList.get(y).getStudents().add(student);
+                    squadList.get(y).setTeam(team);
+                    squadRepo.save(squadList.get(y));
+                    if (y == 5) {
+                        y = 0;
+                    } else {
+                        y++;
+                    }
+                }
+                for (int i = 0; i <= 5; i++) {
                     squadRepo.save(squadList.get(i));
                 }
             }

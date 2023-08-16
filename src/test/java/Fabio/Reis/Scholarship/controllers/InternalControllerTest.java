@@ -90,7 +90,7 @@ class InternalControllerTest {
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-                .put("/v1/internals/{id}", internalId)
+                .put("/api/v1/internals/{id}", internalId)
                 .content(payLoad)
                 .contentType(MediaType.APPLICATION_JSON);
 
