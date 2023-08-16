@@ -104,12 +104,12 @@ public class LocalConfig {
         students.add(student3);
 
         Student student4 = new Student();
-        student3.setName("Rafaela");
-        student3.setLastName("Ferir");
-        student3.setLevel(2);
-        student3.setCourse("Software Engineering");
-        student3.setEmail("Rafaela.Ferir@compass.com");
-        students.add(student3);
+        student4.setName("Rafaela");
+        student4.setLastName("Ferir");
+        student4.setLevel(2);
+        student4.setCourse("Software Engineering");
+        student4.setEmail("Rafaela.Ferir@compass.com");
+        students.add(student4);
 
         Student student5 = new Student();
         student5.setName("Lucas");
@@ -189,6 +189,7 @@ public class LocalConfig {
         student14.setCourse("Information Systems");
         student14.setEmail("Isabela.Martins@compass.com");
         students.add(student14);
+
 
         team.setStudents(students);
 

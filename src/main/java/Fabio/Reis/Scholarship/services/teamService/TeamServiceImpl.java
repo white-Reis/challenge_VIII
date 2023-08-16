@@ -16,6 +16,7 @@ import Fabio.Reis.Scholarship.model.teamEntity.Team;
 import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamDTO;
 import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamRequestDTO;
 import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamStartedDTO;
+import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamsToStatus;
 import Fabio.Reis.Scholarship.repository.InternalRepo;
 import Fabio.Reis.Scholarship.repository.SquadRepo;
 import Fabio.Reis.Scholarship.repository.StudentRepo;
@@ -71,15 +72,32 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public ResponseEntity<List<TeamDTO>> getClasses() {
+    public ResponseEntity<TeamsToStatus> getClasses() {
+        TeamsToStatus teamsToStatus = new TeamsToStatus();
         List<Team> teams = teamRepo.findAll();
-        List<TeamDTO> teamDTOs = new ArrayList<>();
+        List<TeamDTO> waitingTeamDTOs = new ArrayList<>();
+        List<TeamStartedDTO> statedTeamDTOs = new ArrayList<>();
+        List<TeamStartedDTO> finishedTeamDTOs = new ArrayList<>();
 
         for (Team team : teams) {
-            teamDTOs.add(mapInternalsTeamDTO(team));
+            if (team.getStatus() == 0) {
+                TeamDTO teamDTO = mapInternalsTeamDTO(team);
+                waitingTeamDTOs.add(teamDTO);
+            }
+            if (team.getStatus() == 1) {
+                TeamStartedDTO teamDTO = mapInternalsStartedTeamDTO(team);
+                statedTeamDTOs.add(teamDTO);
+            }
+            if (team.getStatus() == 2) {
+                TeamStartedDTO teamDTO = mapInternalsStartedTeamDTO(team);
+                finishedTeamDTOs.add(teamDTO);
+            }
         }
+        teamsToStatus.setWaintingClasses(waitingTeamDTOs);
+        teamsToStatus.setStardedClasses(statedTeamDTOs);
+        teamsToStatus.setFinishedClasses(finishedTeamDTOs);
 
-        return ResponseEntity.status(HttpStatus.OK).body(teamDTOs);
+        return ResponseEntity.status(HttpStatus.OK).body(teamsToStatus);
     }
 
     @Override
@@ -277,6 +295,7 @@ public class TeamServiceImpl implements TeamService {
                     squadRepo.save(squadList.get(i));
                 }
             }
+
             teamRepo.save(team);
 
             return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -313,10 +332,11 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public ResponseEntity<Void> createClassWithStudentsAndInternals(TeamRequestDTO teamRequest) {
         validTeam(teamRequest, validator);
-        for (InternalRequestDTO internal: teamRequest.getInternals()){
-            validInternal(internal,validator);
-        }for (StudentRequestDTO student: teamRequest.getStudents()){
-            validStudent(student,validator);
+        for (InternalRequestDTO internal : teamRequest.getInternals()) {
+            validInternal(internal, validator);
+        }
+        for (StudentRequestDTO student : teamRequest.getStudents()) {
+            validStudent(student, validator);
         }
         if (teamRequest.getStudents().size() > 30) {
             throw new ClassRuleException("The class must have a maximum of thirty students");
@@ -365,14 +385,60 @@ public class TeamServiceImpl implements TeamService {
     public ResponseEntity<Void> addStudentByIds(Long id, IdsList studentsIds) {
         Optional<Team> team = teamRepo.findById(id);
         if (team.isPresent()) {
-                if (team.get().getStatus() != 0) {
-                    throw new ClassRuleException("Class already Started");
-                }
+            if (team.get().getStatus() != 0) {
+                throw new ClassRuleException("Class already Started");
+            }
             for (Long studentId : studentsIds.getIds()) {
                 Optional<Student> student = studentRepo.findById(studentId);
                 if (student.isPresent()) {
                     student.get().getTeams().add(team.get());
                     team.get().getStudents().add(student.get());
+                    studentRepo.save(student.get());
+                } else {
+                    throw new ObjectNotFoundException("Student not found for id: " + studentId);
+                }
+            }
+            teamRepo.save(team.get());
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+
+        } else {
+            throw new ObjectNotFoundException("Class not found");
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> removeInternalsByIds(Long id, IdsList internalsIds) {
+        Optional<Team> team = teamRepo.findById(id);
+        if (team.isPresent()) {
+            for (Long internalId : internalsIds.getIds()) {
+                Optional<Internal> internal = internalRepo.findById(internalId);
+                if (internal.isPresent()) {
+                    internal.get().getTeams().remove(team.get());
+                    team.get().getInternals().remove(internal.get());
+                    internalRepo.save(internal.get());
+                } else {
+                    throw new ObjectNotFoundException("Internal not found for id: " + internalId);
+                }
+            }
+            teamRepo.save(team.get());
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } else {
+            throw new ObjectNotFoundException("Class not found");
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> removeStudentByIds(Long id, IdsList studentsIds) {
+        Optional<Team> team = teamRepo.findById(id);
+        if (team.isPresent()) {
+            if (team.get().getStatus() != 0) {
+                throw new ClassRuleException("Class already Started");
+            }
+            for (Long studentId : studentsIds.getIds()) {
+                Optional<Student> student = studentRepo.findById(studentId);
+                if (student.isPresent()) {
+                    student.get().getTeams().remove(team.get());
+                    team.get().getStudents().remove(student.get());
                     studentRepo.save(student.get());
                 } else {
                     throw new ObjectNotFoundException("Student not found for id: " + studentId);

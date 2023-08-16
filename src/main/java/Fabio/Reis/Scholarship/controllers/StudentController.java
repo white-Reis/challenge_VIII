@@ -7,8 +7,10 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/v1/students")
+@RequestMapping("api/v1/students")
 public class StudentController {
 
     private final StudentService studentService;
@@ -31,7 +33,17 @@ public class StudentController {
 
     @PutMapping("/{id}")
     ResponseEntity<Void> updateStudent(@PathVariable Long id, @RequestBody StudentRequestDTO studentRequestDTO) throws ChangeSetPersister.NotFoundException {
-        return studentService.update(id,studentRequestDTO);
+        return studentService.update(id, studentRequestDTO);
+    }
+
+    @GetMapping
+    ResponseEntity<List<StudentDTO>> getAllStudents() {
+        return studentService.getAll();
+    }
+
+    @GetMapping("{id}")
+    ResponseEntity<StudentDTO> getAllStudents(@PathVariable Long id) {
+        return studentService.getById(id);
     }
 
 }

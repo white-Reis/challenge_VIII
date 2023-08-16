@@ -13,7 +13,6 @@ import Fabio.Reis.Scholarship.repository.TeamRepo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -67,14 +66,14 @@ public class InternalServiceImpl implements InternalService {
 
 
     @Override
-    public ResponseEntity<Void> update(Long internalId, InternalRequestDTO internalRequest) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<Void> update(Long internalId, InternalRequestDTO internalRequest) {
         validInternal(internalRequest, validator);
         Optional<Internal> existinginternalOptional = internalRepo.findById(internalId);
         if (existinginternalOptional.isEmpty()) {
             throw new ObjectNotFoundException("Internal not found");
         }
         Optional<Internal> existingEmailInternalOptional = internalRepo.findByEmail(internalRequest.getEmail());
-        if (existingEmailInternalOptional.isEmpty()) {
+        if (existingEmailInternalOptional.isPresent()) {
             throw new ObjectNotFoundException("Internal e-mail already registered");
         }
         Internal internal = existinginternalOptional.get();
@@ -89,9 +88,33 @@ public class InternalServiceImpl implements InternalService {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
+    public ResponseEntity<InternalDTO> getById(Long internalId) {
+        Optional<Internal> internalOptional = internalRepo.findById(internalId);
+        if (internalOptional.isEmpty()) {
+            throw new ObjectNotFoundException("Internal not found");
+        }
+        InternalDTO internalDTO = modelMapper.map(internalOptional.get(), InternalDTO.class);
+
+        return ResponseEntity.ok(internalDTO);
+    }
 
     @Override
-    public ResponseEntity<Void> delete(Long id) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<List<InternalDTO>> getAll(Long internalId) {
+        List<Internal> internals = internalRepo.findAll();
+        List<InternalDTO> internalDTOs = new ArrayList<>();
+
+        for (Internal internal : internals) {
+            InternalDTO internalDTO = modelMapper.map(internal, InternalDTO.class);
+            internalDTOs.add(internalDTO);
+        }
+
+        return ResponseEntity.ok(internalDTOs);
+    }
+
+
+    @Override
+    public ResponseEntity<Void> delete(Long id) {
         Optional<Internal> internalOptional = internalRepo.findById(id);
         if (!internalOptional.isPresent()) {
             throw new ObjectNotFoundException("Internal not found");

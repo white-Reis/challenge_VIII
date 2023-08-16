@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/internals")
+@RequestMapping("api/v1/internals")
 public class InternalController {
 
     private InternalService internalService;

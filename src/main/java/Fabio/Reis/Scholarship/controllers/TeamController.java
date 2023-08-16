@@ -3,8 +3,8 @@ package Fabio.Reis.Scholarship.controllers;
 import Fabio.Reis.Scholarship.model.Commons.IdsList;
 import Fabio.Reis.Scholarship.model.internalEntity.internaDTO.InternalDTO;
 import Fabio.Reis.Scholarship.model.studentEntity.studentDTO.StudentDTO;
-import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamDTO;
 import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamRequestDTO;
+import Fabio.Reis.Scholarship.model.teamEntity.teamDTO.TeamsToStatus;
 import Fabio.Reis.Scholarship.services.teamService.TeamServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/classes")
+@RequestMapping("api/v1/classes")
 public class TeamController {
     private final TeamServiceImpl teamServiceImpl;
 
@@ -21,7 +21,7 @@ public class TeamController {
     }
 
     @GetMapping
-    ResponseEntity<List<TeamDTO>> getAllClasses() {
+    ResponseEntity<TeamsToStatus> getAllClasses() {
         return teamServiceImpl.getClasses();
     }
 
@@ -63,6 +63,15 @@ public class TeamController {
     @PutMapping("/{id}/students")
     ResponseEntity<Void> addStudents(@PathVariable Long id, @RequestBody IdsList internalsIds) {
         return teamServiceImpl.addStudentByIds(id, internalsIds);
+    }
+    @DeleteMapping("/{id}/internals")
+    ResponseEntity<Void> removeInternals(@PathVariable Long id, @RequestBody IdsList internalsIds) {
+        return teamServiceImpl.removeInternalsByIds(id, internalsIds);
+    }
+
+    @DeleteMapping("/{id}/students")
+    ResponseEntity<Void> removeStudents(@PathVariable Long id, @RequestBody IdsList internalsIds) {
+        return teamServiceImpl.removeStudentByIds(id, internalsIds);
     }
 
     @PutMapping("/{id}/start")

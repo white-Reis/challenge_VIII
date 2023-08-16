@@ -46,10 +46,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseEntity<StudentDTO> create(StudentRequestDTO studentRequest) {
-        validStudent(studentRequest,validator);
+        validStudent(studentRequest, validator);
         Optional<Student> existingStudentOptional = studentRepo.findByEmail(studentRequest.getEmail());
         Optional<Internal> internalOptional = internalRepo.findByEmail(studentRequest.getEmail());
-        if (existingStudentOptional.isPresent()||internalOptional.isPresent()) {
+        if (existingStudentOptional.isPresent() || internalOptional.isPresent()) {
             throw new DataIntegratyViolationException("Student e-mail already registered");
         }
 
@@ -70,7 +70,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseEntity<Void> update(Long studentId, StudentRequestDTO studentRequest) {
-        validStudent(studentRequest,validator);
+        validStudent(studentRequest, validator);
         Optional<Student> existingStudentOptional = studentRepo.findById(studentId);
         if (existingStudentOptional.isEmpty()) {
             throw new ObjectNotFoundException("Student not found");
@@ -91,6 +91,30 @@ public class StudentServiceImpl implements StudentService {
         studentRepo.save(Student);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<StudentDTO> getById(Long studentId) {
+        Optional<Student> studentOptional = studentRepo.findById(studentId);
+        if (studentOptional.isEmpty()) {
+            throw new ObjectNotFoundException("Student not found");
+        }
+        StudentDTO studentDTO = modelMapper.map(studentOptional.get(), StudentDTO.class);
+
+        return ResponseEntity.ok(studentDTO);
+    }
+
+    @Override
+    public ResponseEntity<List<StudentDTO>> getAll() {
+        List<Student> students = studentRepo.findAll();
+        List<StudentDTO> studentDTOs = new ArrayList<>();
+
+        for (Student student : students) {
+            StudentDTO studentDTO = modelMapper.map(student, StudentDTO.class);
+            studentDTOs.add(studentDTO);
+        }
+
+        return ResponseEntity.ok(studentDTOs);
     }
 
     @Override

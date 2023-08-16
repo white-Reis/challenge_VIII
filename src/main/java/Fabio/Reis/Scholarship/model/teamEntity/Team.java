@@ -50,5 +50,8 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private Set<Squad> squads = new HashSet<>();
 
+public void addSM(Internal internal){
+    this.internals.add(internal);
+}
 
 }
